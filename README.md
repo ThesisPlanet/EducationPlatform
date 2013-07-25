@@ -14,8 +14,7 @@ Perform a clean CentOS 6.x x86_64 installation onto a server of your choice.
 Server specifications: At this point in time, 1 GB of RAM should be sufficient. I typically give my servers 16GB of hard drive space and one NIC. Education Platform stores a few files during its operations (e.g., a user uploads a video). Those files are then pushed up to Amazon Web Services Simple Storage Service and then subsequently deleted from the server.
 
 Install system updates (I started with CentOS 6.4).
-$ yum upgrade –y
-
+$ yum upgrade -y
 Install EPEL
 $ wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 $ rpm -ivh epel-release-6-8.noarch.rpm
@@ -59,66 +58,56 @@ gC5ns/82kSprzBOU0BNwUeXZAJ0cvNmY7rvbyiJydyLsSxh/la6HKw==
 EOF
 
 Install PHP-FPM, NGINX, MySQL, and Supervisor.
-
-*PHP-FPM
+PHP-FPM
 $ yum install php php-fpm php-mbstring php-cli php-gd php-devel php-mysqlnd php-mcrypt php-soap php-pecl-gearman php-xml php-pdo php-pecl-mysqlnd-ms php-pecl-zendopcache
-  NGINX (you could use apache if you prefer)
+	NGINX (you could use apache if you prefer)
 $ yum install nginx
 	MySQL Client and Server
 $ yum install mysql mysql-server
 Next, we need to start up the MySQL server and ensure that we can connect to it.
 $ /etc/init.d/mysqld start
-It’ll complain about the username/password. Go ahead and reset it at your discretion.
+It'll complain about the username/password. Go ahead and reset it at your discretion.
 Next we need to add the database and user to mysql.
 $ mysql
-> create database dep;
+?	create database dep;
 o	Query OK 1 row affected (duration)
-> create USER ‘dep’@’localhost’ IDENTIFIED BY ‘dep’;
+?	create USER 'dep'@'localhost' IDENTIFIED BY 'dep';
 o	Query OK 0 rows affected (duration)
-> GRANT ALL PRIVILEGES ON dep.* TO ‘dep’@’localhost’;
+?	GRANT ALL PRIVILEGES ON dep.* TO 'dep'@'localhost';
 o	Query OK 0 rows affected (duration)
-> Flush privileges;
-> Quit;
-Let’s validate that we have connectivity into the database with our new user.
-$ mysql –u dep –p
-> Show databases;
+?	Flush privileges;
+?	Quit;
+Let's validate that we have connectivity into the database with our new user.
+$ mysql -u dep -p
+?	Show databases;
 o	dep should be listed in there.
-> Use dep;
+?	Use dep;
 o	database changed
-> quit;
-
-
+?	quit;
 Supervisor (ensures that the job queue is running).
 $ yum install supervisor
-
-Next we need to install a few PHP dependencies into the appropriate directory – Doctrine ORM and Zend Framework 1.x
+Next we need to install a few PHP dependencies into the appropriate directory - Doctrine ORM and Zend Framework 1.x
 $ curl -sS https://getcomposer.org/installer | php
 $ mv composer.phar /usr/local/bin/composer
 $ composer --stability=dev --dev create-project zendframework/zendframework1 /usr/share/composer/Zend 1.12.3
 $ composer --stability=stable --no-dev create-project doctrine/ORM /usr/share/composer/DoctrineORM 2.3.3
-
 Install gearman (Gearman provides the infrastructure to run jobs in the background which gives users a better experience when they upload content because that task does not wait for PHP to perform upload to AWS, wait for Zencoder to Transcode, etc).
 $ yum install gearmand
-
-Add the ‘web’ user.
+Add the 'web' user.
 $ useradd web;
 $ passwd web
 -	Pick a password.
-
-
-OK, now we need to fix ownership of various directories and files to the web user. This needs to happen each time PHP is updated (it changes the ownership to apache).
-$ chown –R web /var/lib/php/session’
-$ chown –R web /usr/share/composer
-
+OK, now we need to fix ownership of various directories and files to the web user.
+$ chown -R web /var/lib/php/session
+$ chown -R web /usr/share/composer
 Replace some lines in /etc/php.ini to match these:
 memory_limit = 1024M
 include_path = ".:/usr/share/pear:/usr/share/composer/Zend/library";
 post_max_size = 2048M
 file_uploads = On
 upload_max_filesize = 2048M
-
-
 Add the Thesis Planet RPM repository.
+
 $ cat >/etc/yum.repos.d/thesisplanet.repo <<EOF
 [thesisplanet]
 name=Thesis Planet Repository
@@ -130,7 +119,7 @@ failovermethod=priority
 EOF
 
 Add the Thesis Planet GPG Key
-$ cat >/etc/pki/rpm-gpg/RPM-GPG-KEY-thesisplanet <<EOF
+cat >/etc/pki/rpm-gpg/RPM-GPG-KEY-thesisplanet <<EOF
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v2.0.14 (GNU/Linux)
 
@@ -165,11 +154,10 @@ EOF
 
 Time to install Education Platform!
 $ yum install TP-DEP
-
 Assuming no errors were generated the database has been created and the php files were placed in /usr/share/TP-DEP.
 Time to configure the NGINX web-server
-$ mkdir –p /etc/nginx/sites-enabled
-$ mkdir –p /etc/nginx/sites-available
+$ mkdir -p /etc/nginx/sites-enabled
+$ mkdir -p /etc/nginx/sites-available
 $ cat >/etc/nginx/nginx.conf <<EOF
 user web;
 worker_processes  1;
@@ -208,7 +196,7 @@ server {
         location / {
                 index   index.php;
 
-        try_files $uri $uri/ /index.php?\$args;
+        try_files \$uri \$uri/ /index.php?\$args;
         autoindex off;
         }
                 location ~ \.php$ {
@@ -239,10 +227,9 @@ server {
 }
 EOF
 
-Symlink the sites-available configuration to sites-enabled (this loads it in NGINX)
 $ ln -s /etc/nginx/sites-available/dep /etc/nginx/sites-enabled/dep
 
-$ mkdir –p /etc/nginx/includes
+$ mkdir -p /etc/nginx/includes
 $ cat >/etc/nginx/includes/fastcgi_params.inc <<EOF
 fastcgi_param  QUERY_STRING       \$query_string;
 fastcgi_param  REQUEST_METHOD     \$request_method;
@@ -265,12 +252,11 @@ fastcgi_param  SERVER_NAME        \$server_name;
 fastcgi_param  REDIRECT_STATUS    200;
 EOF
 
-Add the SSL web-server configuration.
 $ cat >/etc/nginx/sites-available/dep_ssl <<EOF
 server {
 listen 443 ssl;
     server_name  tpseadepimvl001.prod.thesisplanet.com;
-    access_log  /var/log/nginx/dep_ssl _access.log;
+    access_log  /var/log/nginx/dep_ssl_access.log;
     root /usr/share/TP-DEP/src/public;
         ssl  on;
     ssl_certificate  /etc/nginx/ssl/dep_ssl.pem;
@@ -282,7 +268,7 @@ listen 443 ssl;
         location / {
                 index   index.php;
 
-        try_files $uri $uri/ /index.php?\$args;
+        try_files \$uri \$uri/ /index.php?\$args;
         autoindex off;
         }
                 location ~ \.php$ {
@@ -313,13 +299,12 @@ listen 443 ssl;
 }
 EOF
 
-symlink the SSL configuration to be activated on NGINX load.
 $ ln -s /etc/nginx/sites-available/dep_ssl /etc/nginx/sites-enabled/dep_ssl
 
 
 Generate an SSL certificate for you server (or use your own).
 
-$ mkdir –p /etc/nginx/ssl
+$ mkdir -p /etc/nginx/ssl
 
 $ /usr/bin/openssl req -new -inform PEM -x509 -nodes -days 999 -subj \
         '/C=ZZ/ST=AutoSign/O=AutoSign/localityName=AutoSign/commonName=localhost/organizationalUnitName=AutoSign/emailAddress=AutoSign/' \
@@ -363,7 +348,7 @@ serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
 files = /etc/supervisord.d/*.ini
 EOF
 
-* IMPORTANT NOTE: If supervisor is older than 3.x (e.g, 2.x) the /etc/supervisord.d/ThesisPlanet.ini contents must be appended to the bottom of /etc/supervisord.conf. Otherwise when audio/video/files are uploaded to Education Platform, they will not be processed.
+IMPORTANT NOTE: If supervisor is older than 3.x (e.g, 2.x) the /etc/supervisord.d/ThesisPlanet.ini contents must be appended to the bottom of /etc/supervisord.conf. Otherwise when audio/video/files are uploaded to Education Platform, they will not be processed.
 
 $ yum list installed | grep supervisor
 
@@ -372,7 +357,7 @@ supervisor.noarch    2.1-8.el6          @epel
 $ cat /etc/supervisord.d/ThesisPlanet.ini >> /etc/supervisord.conf
 
 
-Configure the firewall on the server to allow port 80, 443, and port 22 (ssh). Everything else will be dropped (be careful if you have a multi-purpose server).
+Configure the firewall on the server to allow port 80, 443, and port 22 (ssh). Everything else will be dropped.
 
 $ cat >/etc/sysconfig/iptables <<EOF
 *filter
@@ -395,7 +380,7 @@ $ /sbin/chkconfig mysqld on
 $ /sbin/chkconfig supervisord on
 $ /sbin/chkconfig gearmand on
 
-Let’s restart the server just to ensure that everything started properly 
+Let's restart the server just to ensure that everything started properly ?
 Navigate over to http://YOUR_IP_ADDRESS_OR_DOMAIN_NAME.
 
-If everything worked out then you should have a working Education Platform server. If there are errors in this guide, please comment!
+If everything worked out then you should have a working Education Platform server. 

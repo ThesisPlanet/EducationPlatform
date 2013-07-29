@@ -1,0 +1,11 @@
+.vagrant
+.idea
+tests/reports/coverage/*
+/deployment.xml
+/deployment.properties
+
+/.settings/*
+/.settings
+/.project
+
+.buildpath

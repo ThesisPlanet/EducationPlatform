@@ -1,0 +1,92 @@
+    <?php
+if (isset($this->sortedContent)) {
+	if (count($this->sortedContent) > 0) {
+		$count = 0;
+		$ids = "";
+		foreach ($this->sortedContent as $sortOrder => $ChapterAndContentArr) {
+			$count++;
+			$ids .= "#chapter" . $count . ",";
+	?>
+
+<div class="view_inn chapter_block">
+	<h3>
+		<span class="chapter">Chapter <?php echo $sortOrder + 1; ?></span> <span
+			class="head">
+							<?php
+			if ($ChapterAndContentArr['chapter'] != null) {
+				echo $ChapterAndContentArr['chapter']['text'];
+			} else {
+				echo "Unassigned";
+			}
+							?></span>
+	</h3>
+	<a class="btn btn-danger"
+		id="chap<?php
+										if ($ChapterAndContentArr['chapter'] != null) {
+											echo $ChapterAndContentArr['chapter']['id'];
+										} else {
+											echo "0";
+										}
+				?>"
+		onclick="deleteChapter(<?php
+							if ($ChapterAndContentArr['chapter'] != null) {
+								echo $ChapterAndContentArr['chapter']['id'];
+							} else {
+								echo "0";
+							}
+							   ?>);"
+		style="display: none;">Delete</a>
+
+	<ul class="course_chapters"
+		data-chapter-id="<?php
+										   if ($ChapterAndContentArr['chapter'] != null) {
+											   echo $ChapterAndContentArr['chapter']['id'];
+										   } else {
+											   echo "0";
+										   }
+						 ?>">
+                <?php
+									 foreach ($ChapterAndContentArr['content'] as $key => $obj) {
+										 $isComplete = false;
+										 switch ($obj['__class__']) {
+										 case 'App\Entity\Course\Assessment':
+											 foreach ($this->completedAssessments as $key => $value) {
+												 if ($key == $obj['id']) {
+													 $isComplete = true;
+													 break;
+												 } else {
+													 $isComplete = false;
+												 }
+											 }
+											 break;
+										 default:
+											 if (is_array($this->completedContent))
+												 foreach ($this->completedContent as $key => $value) {
+													 if ($key == $obj['id']) {
+														 $isComplete = true;
+														 break;
+													 } else {
+														 $isComplete = false;
+													 }
+												 }
+											 if (!isset($isComplete)) {
+												 $isComplete = false;
+											 }
+										 }
+										 echo $this->partial('partials/content-subscriber.phtml', array('obj' => $obj, 'completed' => $isComplete));
+
+									 }
+				?>  </ul>
+</div>
+<?php
+						}
+					} else {
+						echo "<p>This course does not have any content yet.</p>";
+					}
+?>
+<input type="hidden" id="tid" value="<?php echo $ids; ?>" />
+<?php
+} else {
+	echo "<p>This course does not have any content yet.</p>";
+}
+?>

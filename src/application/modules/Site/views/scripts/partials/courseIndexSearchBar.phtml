@@ -1,0 +1,28 @@
+<div class="nav_main">
+	<div class="row">
+		<div class="span7">
+			<h3>Discover more courses</h3>
+		</div>
+		<div class="span4">
+			<div class="srchbar">
+				<input name="" type="text" placeholder="Search Here..." class="inpt" />
+				<input name="" type="submit" class="go" value="" />
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<ul>
+				<li><a
+					class="btn <?php if ($this->active == "index"): echo "active"; endif;?>"
+					href="/course">Most Recently Added</a></li>
+				<li><a
+					class="btn <?php if ($this->active == "popular"): echo "active"; endif;?>"
+					href="/course/popular">Popular Courses</a></li>
+				<li><a
+					class="btn <?php if ($this->active == "topic"): echo "active"; endif;?>"
+					href="/course/topic">Topics</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

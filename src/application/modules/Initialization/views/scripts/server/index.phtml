@@ -1,0 +1,28 @@
+<?php $this->pageTitle("Initialization - Server Configuration"); ?>
+<div class="row">
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>System Configuration - Server</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<p>
+					<strong>Network Security - </strong> The Digital Education Platform
+					requires port 22, 80, and 443 to be open.
+				</p>
+				<ul>
+					<li>Port 22 - Connectivity to and from Thesis Planet, LLC.</li>
+					<li>Port 80 - HTTP (non encrypted web traffic)</li>
+					<li>Port 443 - HTTPS (encrypted web traffic)</li>
+				</ul>
+				<p>
+					<strong>Domain Name Configuration - </strong>The domain name is
+					used throughout the platform and must be accessible from the
+					internet to ensure proper functionality.
+				</p>
+				<?php echo $this->form;?>
+			</div>
+		</div>
+	</div>
+</div>

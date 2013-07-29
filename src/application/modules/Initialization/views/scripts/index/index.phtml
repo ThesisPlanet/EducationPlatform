@@ -1,0 +1,99 @@
+<?php $this->pageTitle("Initialization"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h2>System Configuration - Overview</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<p>
+					<strong>Thank you for purchasing a copy of the Digital Education
+						Platform!</strong><br />
+				</p>
+				<p>Before you can start training your workforce the platform must be
+					configured. Please ensure that you have completed the following
+					activities:</p>
+				<ol>
+					<li><a target="_blank"
+						href="http://affiliate.godaddy.com/redirect/47E25B990F9DE8CBD1E85F4A69617FBCFCD0668D519E2AC0D483E9A6CC2507355CF0A9CAFBADAA8A3A8F50A7DC7213A6B2FDCC0EF380D6214C435856EE59D0CF">Purchase</a>
+						or configure the web-address (domain name) that users will
+						navigate to in their web browser</li>
+					<li><a target="_blank"
+						href="http://affiliate.godaddy.com/redirect/4438517DB8C1BE819F00425B594A5ADF16FD86DA15EDF2AFB4BE89E53A130BB304E6370A45AA5DF132B47DBBC6B9FE1CEA3F9D2961ECD35BB8DC4AE07FFF65D8">Purchase</a>
+						or generate an SSL Certificate specific to the domain name</li>
+					<li>Register an <a target="_blank" href="https://aws.amazon.com/">Amazon
+							Web Services</a> account
+					</li>
+					<li>Register a <a target="_blank" href="http://www.zencoder.com/">Zencoder</a>
+						account
+					</li>
+				</ol>
+
+				<p>System configuration is a sensitive process. Tests will be
+					performed at the end of each phase in order to ensure that the
+					system can operate properly.</p>
+				<hr />
+				<h2>Upgrading?</h2>
+				<div class="center">
+					<a href="/Initialization/backup/restore" class="btn btn-primary">Restore
+						from a backup</a> <a href="/Initialization/backup/create"
+						class="btn btn-success">Create a new backup</a>
+					<h3>Configuration Path:</h3>
+					<p><?php echo CONFIGURATION_PATH; ?></p>
+				</div>
+				<hr />
+			<?php echo $this->form; ?>
+
+			<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><a href="/Initialization/server">Local Server parameters</a></td>
+							<td><?php echo $this->escape($this->status['server']); ?></td>
+						</tr>
+						
+						<tr>
+							<td><a href="/Initialization/server/ssl">SSL Certificate</a></td>
+							<td><?php echo $this->escape($this->status['ssl']); ?></td>
+						</tr>
+						<tr>
+							<td><a href="/Initialization/zencoder">Zencoder</a></td>
+							<td><?php echo $this->escape($this->status['zencoder']); ?></td>
+						</tr>
+						<tr>
+							<td><a href="/Initialization/aws">Amazon Web Services</a></td>
+							<td><?php echo $this->escape($this->status['aws']); ?></td>
+						</tr>
+						
+						<tr>
+							<td><a href="/Initialization/email">Email</a></td>
+							<td><?php echo $this->escape($this->status['email']); ?></td>
+						</tr>
+						<tr>
+							<td><a href="/Admin/user">Admin Account</a></td>
+							<td><?php echo $this->escape($this->status['admin']); ?></td>
+						</tr>
+						<tr>
+							<td><a href="/Initialization/user">User Settings</a></td>
+							<td><?php echo $this->escape($this->status['users']); ?></td>
+						</tr>
+						<tr>
+							<td><a href="/Initialization/server/picture">Heading picture
+									(your company logo)</a></td>
+							<td><?php echo $this->escape($this->status['picture']); ?></td>
+						</tr>
+
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+	</div>
+</div>

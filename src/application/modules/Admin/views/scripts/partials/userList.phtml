@@ -1,0 +1,10 @@
+<tr>
+	<td><a class="btn btn-warning"
+		href="/Admin/user/edit/<?php echo $this->escape($this->user->getId());?>">Edit</a></td>
+	<td><a class="btn btn-danger"
+		href="/Admin/user/delete/<?php echo $this->escape($this->user->getId());?>">Delete</a></td>
+	<td><?php echo $this->escape($this->user->getEmail());?></td>
+	<td><?php echo $this->escape($this->user->getFirstName());?></td>
+	<td><?php echo $this->escape($this->user->getLastName());?></td>
+	<td><?php echo $this->escape($this->user->getRole());?></td>
+</tr>

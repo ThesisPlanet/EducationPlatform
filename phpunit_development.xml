@@ -1,0 +1,31 @@
+<phpunit bootstrap="./tests/bootstrap_development.php">
+	<testsuites>
+		<testsuite name="Digital Education Platform">
+			<directory>tests/./application</directory>
+			<directory>tests/./library</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		
+	
+		<whitelist>
+			<directory suffix=".php">src/application</directory>
+			<directory suffix=".php">src/library/App</directory>
+			<directory suffix=".php">src/library/TP</directory>
+			<exclude>
+				<directory suffix=".phtml">src/application</directory>
+				<directory suffix=".php">src/library/Zend</directory>
+				<directory suffix=".php">src/library/Aws</directory>
+				<directory suffix=".php">src/library/vendor</directory>
+			</exclude>
+		</whitelist>
+	</filter>
+	<logging>
+		<log type="coverage-html" target="build/coverage" title="TP_DEP"
+			charset="UTF-8" yui="true" highlight="true" lowUpperBound="35"
+			highLowerBound="70" />
+		<log type="coverage-clover" target="build/logs/clover.xml" />
+		<log type="junit" target="build/logs/junit.xml"
+			logIncompleteSkipped="false" />
+	</logging>
+</phpunit>

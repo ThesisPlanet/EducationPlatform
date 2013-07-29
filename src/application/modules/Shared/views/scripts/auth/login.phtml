@@ -1,0 +1,35 @@
+<?php $this->pageTitle("Login"); ?>
+<div class="row">
+	<div class="span4 offset4 module">
+		<div class="content">
+			<div class="login_form">
+				<h1>Login Panel</h1>
+				<div class="form_inn">
+				<?php if (isset ($this->message)) :?>
+				<div class="alert alert-error">
+				    <?php echo $this->escape($this->message);?>
+				</div>
+				<?php endif;?>
+			        <?php echo $this->form;?>
+		        </div>
+				<div class="controls">
+					<h2>
+						<a href="/forgotpassword">Forgot your password?</a>
+					</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php if (isset($this->displayRegister) && $this->displayRegister == true) :?>
+<div class="row">
+	<div class="span4 offset4">
+		<div class="module">
+			<div class="content signup">
+				<h2>Don't have an account?</h2>
+				<a href="/register" class="sign_btn">Signup!</a>
+			</div>
+		</div>
+	</div>
+</div>
+<?php endif;?>

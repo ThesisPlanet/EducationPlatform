@@ -1,0 +1,26 @@
+<?php $this->pageTitle("File - Delete"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/course/curriculum/<?php echo $this->escape($this->course->getId());?>"><span>Back
+							to Curriculum</span></a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- navigation close -->
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h1>Delete a file</h1>
+			</div>
+			<div class="content">
+				<p class="alert">Warning, this action cannot be reversed.</p>
+		<?php echo $this->form;?>
+		</div>
+		</div>
+	</div>
+</div>

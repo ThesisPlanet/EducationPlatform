@@ -1,0 +1,20 @@
+<?php $this->pageTitle("Course - Delete"); ?>
+<?php echo $this->partial("partials/courseIndexSearchBar.phtml", array('active' => "popular"));?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h1>Delete this course</h1>
+
+			</div>
+			<div class="content">
+				<h2>
+					<strong>Danger!!!</strong> Deleting a course is an irreversable
+					action. All content, questions and answers, and announcements will
+					be permanently removed.
+				</h2>
+                <?php echo $this->form;?>
+            </div>
+		</div>
+	</div>
+</div>

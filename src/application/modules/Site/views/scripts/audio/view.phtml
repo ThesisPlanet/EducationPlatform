@@ -1,0 +1,64 @@
+<?php $this->pageTitle("Audio - View"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<h3><?php echo $this->audio->getTitle(); ?></h3>
+			<!-- heading close -->
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/course/view/<?php echo $this->audio->getCourse()->getId(); ?>">&laquo;
+						Go Back</a></li>
+				<li><a
+					href="<?php echo $this->service->acl_getDownloadUrl($this->audio->getId(), null); ?>">Download
+						&raquo;</a></li>
+				<li>
+			<?php
+if ($this->isComplete == true) {
+			?>  
+<a class="isCompleted"
+					onclick="markIncomplete('<?php echo $this->audio->getCourse()->getId(); ?>','<?php echo $this->audio->getId(); ?>');">Mark
+						Incomplete</a>                  
+<?php
+			} else {
+?>
+<a class="isCompleted"
+					onclick="markComplete('<?php echo $this->audio->getCourse()->getId(); ?>','<?php echo $this->audio->getId(); ?>');">Mark
+						Complete</a>
+<?php
+}
+?>			
+			
+			</li>
+			</ul>
+		</div>
+		<!-- navigation close -->
+	</div>
+</div>
+
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h1><?php
+echo $this->audio->getTitle();
+					?></h1>
+			</div>
+			<div class="content">
+<?php
+					if (isset($this->audio) and $this->audio != null) {
+						echo $this->partial('partials/audio.phtml', array("audio" => $this->audio, "audioService" => $this->audioService));
+					}
+?>			
+	
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+		$(function() {
+			$( "#tabs" ).tabs();
+		});
+	</script>
+
+<div class="right"></div>
+<!-- </div> -->

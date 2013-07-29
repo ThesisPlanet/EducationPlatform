@@ -1,0 +1,13 @@
+<input style="width: 95%;" type="text"
+	placeholder="Type in your question about this course"
+	data-courseid="{{courseId}}" name="askAQuestion" class="askAQuestion" />
+<hr />
+<ul>
+	{{#questions}}
+	<li><a data-id="{{id}}" class="questionLink">{{text}}</a> <br />
+		<a class="btn answerCount questionLink">{{_answerCount}} Answer(s)</a><br />
+		<span>{{_username}} asked this <b>{{_age}}</b> ago
+	</span></li> {{/questions}} {{#if questions}} {{else}}
+	<p>Got a question? Ask!</p>
+	{{/if}}
+</ul>

@@ -1,0 +1,34 @@
+<?php $this->pageTitle("Initialization - Logo"); ?>
+<div class="row">
+
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Update heading image (Typically a company logo)</h2>
+
+			</div>
+			<div class="clr"></div>
+			<div class="content settingsZone">
+				<p>
+					<strong>Please note:</strong> If you are replacing an existing
+					image, it can take up to 48 hours for the new image to appear. This
+					is due to AWS caching the image.
+				</p>
+				<p>
+					<strong>Your picture will be cropped to 234x76 px.</strong>
+				</p>
+			    <?php echo $this->form;?>
+
+			<h3>Preview</h3>
+				<div class="center">
+					<img class="header_image"
+						src="<?php
+    $service = new \App\Service\Configuration();
+    echo $service->acl_getImageUrl();
+    ?>"
+						alt="Logo" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,19 @@
+<div class="fileBlock">
+	<table border="0" width="100%">
+	<tr>
+	<td class="fileTitle">
+	<?php echo $this->file->getTitle();?>
+	</td>
+	</tr>
+	<tr>
+	<td class="fileDescription">
+	<strong>Description: </strong><?php echo $this->file->getDescription();?>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	<a href="<?php echo $this->file->getDownloadUrl(); ?>"><img src="/images/icons/<?php echo $this->file->getExtension();?>.png" alt="Download!"/></a> <?php echo $this->file->getSizeInKb();?> Kb
+	</td>
+	</tr>
+	</table>
+</div>

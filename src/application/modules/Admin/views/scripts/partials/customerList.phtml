@@ -1,0 +1,19 @@
+<tr>
+	<td><a
+		href="/Admin/customer/edit/<?php echo $this->customer->getId();?>">Edit</a></td>
+	<td><a
+		href="/Admin/customer/delete/<?php echo $this->customer->getId();?>">Delete</a></td>
+
+	<td><?php echo $this->customer->getName();?></td>
+	<td><?php
+if (is_object($this->customer->getOwner())) {
+    echo $this->customer->getOwner()->getFirstName() . " " .
+     $this->customer->getOwner()->getLastName();
+}
+?></td>
+	<td><?php
+if (is_object($this->customer->getOwner())) {
+    echo $this->customer->getOwner()->getPhone();
+}
+?></td>
+</tr>

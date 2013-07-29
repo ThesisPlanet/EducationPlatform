@@ -1,0 +1,33 @@
+<?php $this->pageTitle("Activate account"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+                <?php
+
+if ($this->noAccount == true) {
+				?>
+<h1>No account was found associated with the e-mail address: <?php echo $this->email; ?></h1>
+<?php
+} else {
+	if ($this->ok == false) {
+?>
+    		<h1>The token that was provided does not match what I expected.</h1>
+        <?php
+	}
+}
+		?>
+			
+			</div>
+            <div class="content">
+            <?php if ($this->noAccount == true) { ?>
+            <p>
+	If you did not activate you account within three days of registering
+	your account you will need to <a href="/register">re-register your
+		account.</a>
+<p>
+            <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>

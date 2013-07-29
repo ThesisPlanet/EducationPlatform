@@ -1,0 +1,799 @@
+<?php
+/**
+ * Thesis Planet - Digital Education Platform
+ *
+ * LICENSE
+ *
+ * This source file is subject to the licensing terms found at http://www.thesisplanet.com/platform/tos
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to sales@thesisplanet.com so we can send you a copy immediately.
+ *
+ * @category  ThesisPlanet
+ * @copyright  Copyright (c) 2009-2012 Thesis Planet, LLC. All Rights Reserved. (http://www.thesisplanet.com)
+ * @license   http://www.thesisplanet.com/platform/tos   ** DUAL LICENSED **  #1 - Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. #2 - Thesis Planet Commercial Use EULA.
+ */
+namespace tests\application\services\Content;
+
+/**
+ * @backupGlobals disabled
+ * @backupStaticAttributes disabled
+ */
+class FileTest extends \Zend_Test_PHPUnit_ControllerTestCase
+{
+
+    protected $_service = null;
+
+    protected $_userService = null;
+
+    protected $_courseService = null;
+
+    public function setUp ()
+    {
+        $this->_service = new \App\Service\Content\File();
+        $this->_userService = new \App\Service\User();
+        $this->_courseService = new \App\Service\Course();
+        
+        // create a course
+        
+        $courseData = array(
+                'topic' => "Computer Science",
+                'description' => "Course Testing",
+                'title' => "FILE - " . time(),
+                'isApprovalRequired' => 0,
+                'isSearchable' => 0,
+                'isEnabled' => 1,
+                'price' => 150
+        );
+        
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        $this->_courseService->setUser($user);
+        
+        $this->_courseId = $this->_courseService->acl_create($courseData);
+        // Expect an integer
+        $this->assertInternalType('integer', $this->_courseId);
+        
+        if (file_exists(__DIR__ . "/_files/file_start.txt"))
+            system("rm " . __DIR__ . "/_files/file_start.txt");
+    }
+
+    public function testFindByCourseId ()
+    {}
+
+    public function testACL ()
+    {
+        
+        // Load up an audio file
+        $a = $this->_service->find(2);
+        
+        // Visitor
+        $user = $this->_userService->findByEmail("testvisitor@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertFalse(
+                $this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        
+        // User
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertFalse(
+                $this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        
+        // Subscriber
+        $user = $this->_userService->findByEmail(
+                "testsubscriber@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        
+        // Provider
+        $user = $this->_userService->findByEmail(
+                "testprovider@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertTrue($this->_service->isAllowed($a, "acl_create"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_update"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        // Admin
+    }
+
+    public function testGetForm ()
+    {
+        $this->assertInstanceOf('\App\Form\Content\File', 
+                $this->_service->getForm());
+    }
+
+    public function testGetDeleteForm ()
+    {
+        $this->assertInstanceOf('\App\Form\Content\FileDelete', 
+                $this->_service->getDeleteForm());
+    }
+    
+    /**
+
+    public function testCreateNoUser ()
+    {
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        // $_FILES simulation
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        $this->setExpectedException("exception", 
+                \App\Service\Content\Audio::USER_NOT_SET);
+        $this->_service->acl_create($fileData);
+    }
+    
+    **/
+/**
+    public function testCreateUnauthorizedUser ()
+    {
+        $user = $this->_userService->findByEmail("testvisitor@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        // $_FILES simulation
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::PERMISSION_DENIED);
+        $this->_service->acl_create($fileData);
+    }
+**/
+    public function testCreateInvalidForm ()
+    {
+        $user = $this->_userService->findByEmail(
+                "testprovider@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        $data = array(
+                'course' => null,
+                'title' => null,
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::FORM_INVALID);
+        
+        $this->_service->acl_create(array());
+    }
+
+    public function testCreate ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        // $_FILES simulation
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Audio testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        // Additional tests for aContent
+        $adminUser = $this->_userService->findByEmail(
+                'testadmin@thesisplanet.com');
+        $this->_service->setUser($adminUser);
+        
+        $this->assertTrue($this->_service->acl_publish($contentId));
+        $this->assertTrue($this->_service->acl_unpublish($contentId));
+        $this->assertTrue($this->_service->acl_enable($contentId));
+        $this->assertTrue($this->_service->acl_disable($contentId));
+        
+        // de-elevate back to a provider.
+        $this->_service->setUser($user);
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+        
+    }
+
+    public function testUploadNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::NOT_FOUND);
+        
+        $this->_service->system_processData("0", array());
+    }
+
+    public function testDeleteFromLocalNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::NOT_FOUND);
+        
+        $this->_service->system_deleteLocalData("0");
+    }
+
+    public function testDeleteFromCloudNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::NOT_FOUND);
+        
+        $this->_service->system_deleteCloudData("0");
+    }
+
+    public function testGetDownloadUrlUnauthorized ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        // $_FILES simulation
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Audio testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        $user = $this->_userService->findByEmail('testvisitor@thesisplanet.com');
+        $this->_service->setUser($user);
+        try {
+            $this->_service->acl_getThumbnailUrl($contentId);
+            $this->fail('should not have passed.');
+        } catch (\exception $e) {
+            $this->assertEquals(\App\Service\Content\File::PERMISSION_DENIED, 
+                    $e->getMessage());
+        }
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        $this->_service->setUser($user);
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $this->_service->setUser($user);
+        
+        
+    }
+
+    public function testGetDownloadUrlNoObject ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        $this->setExpectedException("exception", 
+                \App\Service\Content\File::NOT_FOUND);
+        
+        $this->_service->acl_getThumbnailUrl("0");
+    }
+
+    public function testGetDownloadUrl ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do File testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        $url = $this->_service->acl_getDownloadUrl($contentId);
+        
+        $this->assertContains("?Expires=", $url);
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+    }
+
+    public function testGetThumbnailUrl ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do File testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        $url = $this->_service->acl_getThumbnailUrl($contentId);
+        
+        $this->assertContains(".png", $url);
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+    }
+
+    public function testUpdateUnauthorizedUser ()
+    {
+        $user = $this->_userService->findByEmail("testvisitor@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do File testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        $user = $this->_userService->findByEmail(
+                'testsubscriber@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+        
+        $this->assertFalse(
+                $this->_service->isAllowed($this->_service->find($contentId), 
+                        "acl_update"));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+        $this->assertTrue($this->_service->acl_delete($contentId));
+    }
+
+
+    public function testUpdateAndUpload ()
+    {
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        
+        $this->_service->setUser($user);
+        
+        $fileData = array(
+                'description' => "Test File Description",
+                'course' => $this->_courseId,
+                'title' => "Test File Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        // $_FILES simulation
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'file_create.txt',
+                        'type' => 'text/plain',
+                        'size' => '4096',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'file.txt', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'file_create.txt'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\File', $form);
+        
+        if (! $form->isValid($fileData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Audio testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($fileData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        $this->assertTrue($this->_service->acl_update($contentId, $fileData));
+        
+        $jobParams = array(
+                'environment' => APPLICATION_ENV,
+                'server' => \Zend_Registry::getInstance()->get('system')->PRIVATE_IP
+        );
+        
+        $this->assertTrue(
+                $this->_service->system_sendDataToCloud($contentId, $jobParams));
+        
+        $this->assertTrue($this->_service->system_deleteCloudData($contentId));
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->_service->setUser($user);
+        
+        
+    }
+
+    public function testDelete ()
+    {}
+
+    public function tearDown ()
+    {
+        $user = $this->_userService->findByEmail("testadmin@thesisplanet.com");
+        $this->_courseService->setUser($user);
+        $result = $this->_courseService->acl_delete($this->_courseId);
+        $this->assertTrue($result);
+        
+        unset($this->_service);
+        unset($this->_userService);
+        unset($this->_courseService);
+        if (file_exists(__DIR__ . "/_files/file_start.txt"))
+            system("rm " . __DIR__ . "/_files/file_start.txt");
+    }
+}

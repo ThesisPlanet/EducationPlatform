@@ -1,0 +1,23 @@
+<table border="1" width="100%">
+	<tr>
+		<td>&nbsp;</td>
+		<td class="mediaPlayer" width="480px"><script type='text/javascript'
+				src='/js/libs/jwPlayer/5.10/jwplayer.js'></script>
+
+			<div id="mediaspace">Loading the player ...</div> <script
+				type='text/javascript'>
+$(document).ready(function(){
+	  jwplayer("mediaspace").setup({
+		    flashplayer: "/js/libs/jwPlayer/5.10/player.swf",
+		    file: "<?php echo $this->audioService->acl_getDownloadUrl($this->audio->getId(), array());?>",
+			autostart: "false",
+		    controlbar: "bottom",
+		    width: "470",
+		    height: "24"
+		  });
+});
+	
+</script></td>
+		<td>&nbsp;</td>
+	</tr>
+</table>

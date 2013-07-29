@@ -1,0 +1,61 @@
+<?php $this->pageTitle("Course - Subscribers"); ?>
+<?php
+// If there isn't a course, return false so no errors are displayed.
+if (! isset($this->course)) {
+    return false;
+}
+?>
+<div class="row">
+	<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h1>Manage Subscribers</h1>
+				<ul class="sbcbr_nav">
+					<li><a href="/course/invite/<?php echo $this->course->getId();?>"><span>Send
+								an invitation</span></a></li>
+				</ul>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Manage</th>
+							<th>Email</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Role</th>
+						</tr>
+					</thead>
+					<tbody>
+			<?php
+foreach ($this->course->getSubscriptions() as $key => $subscription) {
+    ?>
+				<tr>
+							<td><a class="btn btn-warning"
+								href="/course/editsubscription/<?php echo $subscription->getId();?>">Change
+									Role</a> <a class="btn btn-danger"
+								href="/course/deletesubscription/<?php echo $subscription->getId();?>">Delete</a>
+							</td>
+							<td><?php echo $this->escape($subscription->getUser()->getEmail());?></td>
+							<td><?php echo $this->escape($subscription->getUser()->getFirstname());?></td>
+							<td><?php echo $this->escape($subscription->getUser()->getLastname());?></td>
+							<td><?php echo $this->escape($subscription->getRole());?></td>
+						</tr>
+	<?php
+}
+?>
+			</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+</div>

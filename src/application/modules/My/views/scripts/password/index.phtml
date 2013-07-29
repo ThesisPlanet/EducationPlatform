@@ -1,0 +1,23 @@
+<?php $this->pageTitle("Change Password"); ?>
+<div class="module">
+	<div class="heading">
+		<h1>Change your password</h1>
+
+	</div>
+	<div class="clr"></div>
+	<div class="content">
+
+<?php
+if (count($this->messages)) {
+    foreach ($this->messages as $message) {
+        ?>
+<div class="alert alert-success">
+			<p><?php echo $this->escape($message);?></p>
+		</div>
+<?php
+    }
+}
+?>
+<?php echo $this->form;?>
+</div>
+</div>

@@ -1,0 +1,48 @@
+<?php $this->pageTitle("Administration - Monitoring"); ?>
+<div class="row">
+<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+    <div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h1>Platform Events</h1>
+			</div>
+			<div class="content">
+				<div id="monitoring">
+					<table class="table table-bordered">
+						<tr>
+							<td class="Priority-0">Emergency</td>
+							<td class="Priority-1">Alert</td>
+							<td class="Priority-2">Critical</td>
+							<td class="Priority-3">Error</td>
+							<td class="Priority-4">Warning</td>
+							<td class="Priority-5">Notice</td>
+							<td class="Priority-6">Informational</td>
+							<td class="Priority-7">Debug</td>
+						</tr>
+					</table>
+
+					<table class="table table-bordered">
+						<tr>
+							<th>Timestamp (PST)</th>
+							<th>Message</th>
+						</tr>
+                <?php
+                foreach ($this->eventList as $key => $event) {
+                    echo $this->partial('partials/eventList.phtml', 
+                            array(
+                                    "event" => $event
+                            ));
+                }
+                ?>
+			</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

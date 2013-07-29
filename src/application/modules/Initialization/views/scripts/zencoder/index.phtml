@@ -1,0 +1,21 @@
+<?php $this->pageTitle("Initialization - Encoder Configuration"); ?>
+<div class="row">
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>System Configuration - Zencoder</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<p>Zencoder is our encoding partner of choice. Zencoder converts
+					most audio and video formats into file formats that can be viewed by a
+					majority of devices. You must have a zencoder account in order to
+					continue.</p>
+				<p>Zencoder will also send notifications to this system once it has
+					completed converting your audio and/or video and has uploaded that
+					converted file into your AWS S3 bucket.</p>
+				<?php echo $this->form;?>
+			</div>
+		</div>
+	</div>
+</div>

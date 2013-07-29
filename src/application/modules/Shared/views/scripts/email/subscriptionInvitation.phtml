@@ -1,0 +1,28 @@
+<html>
+<body>
+<p>Welcome to <?php echo $this->service->getTitle();?>!</p>
+<p>Once your account has been created you will be able to start viewing the private content at {find URL}.</p>
+
+<p>Steps to create your account:
+<ol>
+<li>Navigate to http://dep.thesisplanet.com/register/{email}</li>
+<li>Fill out your basic information</li>
+<li>Activate your account (we’ll send one more e-mail).</li>
+</ol>
+<p>Once your account has been created, you may accept or deny the sharing request from <?php echo $this->customer->getName();?> for <?php echo $this->service->getTitle();?>.</p>
+
+
+
+<p>Thanks!<br />
+-- The Digital Education Platform development team</p>
+<hr />
+<p>This e-mail was sent by Thesis Planet, LLC. On behalf of <?php echo $this->customer->getName();?>.</p> 
+
+<p>If you did not expect to receive this e-mail, we are terribly sorry for inconveniencing you and we. We hate spam just as much as you do and respect your privacy. Should you wish to be put on the ‘never e-mail me again!’ list, please <a
+	href=”https://dep.thesisplanet.com/Communication/Email/unsubscribe/<?php $this->emailAddress; ?>/<?php echo $this->unsubscribeToken;?>”>unsubscribe</a>.</p>
+
+
+
+</body>
+</html>
+

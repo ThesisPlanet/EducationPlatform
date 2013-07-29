@@ -1,0 +1,62 @@
+<!--  Q&A Right panel Template  (Questions) -->
+<script type="text/xml" id="courseQuestionsTemplate">
+ <input style="width: 95%;" type="text" placeholder="Type in your question about this course" data-courseid="{{courseId}}" name="askAQuestion" class="askAQuestion"/>
+<hr />
+      <ul>
+     	{{#questions}}
+			<li>
+<a data-id="{{id}}" class="questionLink">{{text}}</a>
+<br />
+<span><a data-id="{{id}}" class="answerCount questionLink">{{_answerCount}} Answer(s)</a>
+<br />
+{{_username}} asked this <b>{{_age}}</b> ago</span>
+</li>
+			{{/questions}}
+      </ul>
+
+</script>
+<!--  /Q&A Right panel Template  (Questions) -->
+
+<!--  Q&A Right panel Template  (Answers) -->
+<script type="text/xml" id="courseQuestionAnswersTemplate">
+<!-- If allowed, insert a deletion link-->
+{{#if canDelete}}
+<a class="btn deleteQuestion" data-id="{{questionId}}">Delete this question</a><br/>
+{{/if}
+<a class="btn backToQuestionsLink" data-id="{{courseId}}">Back</a> <b>{{_username}}</b> asks ...
+<h3>{{questionText}}</h3>
+<input type="text" style="width: 95%" placeholder="Type in an answer to this question" data-id="{{questionId}}" name="answerAQuestion" class="answerAQuestion"/>
+<hr />
+<ul>
+{{#answers}}
+	<li><span class="thumb"></span> <a class="user">{{_username}}</a> <time>
+			replied <b>{{_age}}</b> ago
+		</time>
+		<article>{{text}}</article></li>
+{{/answers}}
+</ul>
+</script>
+<!--  /Q&A Right panel Template  (Answers) -->
+
+<!--  Announcements Right panel Template -->
+<script type="text/xml" id="courseAnnouncementsTemplate">
+<div id="announcementsDialog"></div>
+<ul>
+{{#announcements}}
+	<li><a data-id="{{id}}">{{title}}</a></li>
+{{/announcements}}
+</ul>
+</script>
+<!--  /Announcements Right panel Template -->
+
+<!-- Course Settings - Basic -->
+<script type="text/xml" id="courseSettingsBasicTemplate">
+<form>
+	<label for="title">Course Title</label> <input class="span8" type="text" name="title"
+		value="{{title}}" /> <label for="description">Course
+		Description</label>
+	<textarea class="span8" name="description">{{description}}</textarea>
+<input type="submit" id="courseSettingsBasicSubmit" class="btn btn-primary btn-large center" value="Update basic information"/>
+</form>
+</script>
+<!-- /Course Settings - Basic -->

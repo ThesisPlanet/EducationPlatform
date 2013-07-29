@@ -1,0 +1,24 @@
+<?php $this->pageTitle("Video - Add"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/course/curriculum/<?php echo $this->escape($this->courseId);?>"><span>Back
+							to curriculum</span> </a></li>
+			</ul>
+		</div>
+
+		<div class="module">
+			<div class="heading">
+				<h2>Add a video</h2>
+			</div>
+			<div class="content">
+				<h3>Supported formats: All major video formats.</h3>
+				<p>This video will be converted into a web-distributable format
+					compatible with most devices.</p>
+				<?php echo $this->form;?>
+			</div>
+		</div>
+	</div>
+</div>

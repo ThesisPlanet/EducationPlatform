@@ -1,0 +1,5 @@
+
+<tr class="Priority-<?php echo $this->event->getPriority();?>">
+	<td><?php echo $this->event->getTimestamp()->format('Y-m-d H:i:s');?></td>
+	<td><pre><?php echo $this->event->getMessage();?></pre></td>
+</tr>

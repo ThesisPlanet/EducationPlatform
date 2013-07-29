@@ -1,0 +1,40 @@
+<?php $this->pageTitle("Assessment - View Question"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/assessment/view/<?php echo $this->escape($this->assessment->getId());?>"><span>Back
+							to Assessment</span></a></li>
+
+			</ul>
+		</div>
+
+		<div class="module">
+			<div class="heading">
+				<h2>Question Viewer</h2>
+			</div>
+			<div class="content">
+				<?php ?>
+				<?php echo $this->AssessmentQuestion($this->attemptId, $this->questionList,$this->submittedAnswers,$this->questionNumber);?>
+                <?php if ($this->questionNumber != 0):?>				
+				<a id="assessment_question_save_previous"
+					class="btn btn-large btn-warning">View Previous Question</a><?php endif;?>
+					 
+					<?php
+    $questionNumberAsCount = (int) $this->questionNumber;
+    
+    $questionNumberAsCount ++;
+    if (count($this->questionList) == $questionNumberAsCount) :
+        ?>
+								<a id="assessment_question_save_and_finish"
+					class="btn btn-success btn-large">Finish the assessment!</a>		
+					<?php else:?>
+					<a id="assessment_question_save_next"
+					class="btn btn-large btn-primary">View Next Question</a>
+					<?php endif;?>
+					
+			</div>
+		</div>
+	</div>
+</div>

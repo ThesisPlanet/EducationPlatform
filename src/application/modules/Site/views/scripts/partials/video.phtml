@@ -1,0 +1,28 @@
+<script type='text/javascript'
+			src='/js/libs/jwPlayer/5.10/jwplayer.js'></script>
+
+		<div id='mediaspace'>Sorry! It appears that your device does not
+		support flash. Please visit <a
+			href="http://get.adobe.com/flashplayer/">http://get.adobe.com/flashplayer/</a></div>
+<script type="text/javascript">
+jwplayer("mediaspace").setup({
+    file: "<?php echo $this->service->acl_getStreamUrl($this->video->getId(),array());?>",
+    height: 284,
+    modes: [{
+        type: "flash",
+        src: "/js/libs/jwPlayer/5.10/player.swf"
+    },{
+        type: "html5",
+        config: {
+            file: "<?php echo $this->service->acl_getDownloadUrl($this->video->getId(),array());?>",
+            provider: "video"
+        }
+    }],
+    image: "<?php
+        echo $this->service->acl_getThumbnailUrl($this->video->getId(), array('size' => 'large'));
+        ?>",
+    provider: "rtmp",
+    streamer: "rtmp://<?php echo $this->service->getDistributionStreamer();?>",
+    width: 480
+});
+</script>

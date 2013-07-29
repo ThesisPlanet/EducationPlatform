@@ -1,0 +1,26 @@
+<div class="span3">
+	<div class="module">
+		<div class="content">
+			<ul class="side_nav">
+				<li><a href="/course/view/<?php echo $this->course->getId();?>">Back
+						to Course</a></li>
+				<li><a href="/course/settings/<?php echo $this->course->getId();?>"
+					class="<?php if ($this->current == "settings"){echo 'bold';}?>">Basic
+						Information</a></li>
+
+				<li><a href="/course/picture/<?php echo $this->course->getId();?>"
+					class="<?php if ($this->current == "picture"){echo 'bold';}?>">Course
+						Picture</a></li>
+				<li><a
+					href="/course/curriculum/<?php echo $this->course->getId();?>"
+					class="<?php if ($this->current == "curriculum"){echo 'bold';}?>">Curriculum</a></li>
+				<li><a
+					href="/course/permissions/<?php echo $this->course->getId();?>"
+					class="<?php if ($this->current == "permissions"){echo 'bold';}?>">Permissions</a></li>
+				<li><a
+					href="/course/subscribers/<?php echo $this->course->getId();?>"
+					class="<?php if ($this->current == "subscribers"){echo 'bold';}?>">Subscribers</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

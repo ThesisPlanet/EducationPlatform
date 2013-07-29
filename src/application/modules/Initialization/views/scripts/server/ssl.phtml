@@ -1,0 +1,22 @@
+<?php $this->pageTitle("Initialization - SSL Configuration"); ?>
+<div class="row">
+
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Update SSL Certificates - x509</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<p>
+					<strong>Warning:</strong> Please keep in mind that changing the SSL
+					certificate is a sensitive task. All HTTPS traffic will fail if the
+					incorrect certificate is in place. <br />
+					<strong>The web-server must be restarted after a new cert is
+						installed</strong>
+				</p>
+			    <?php echo $this->form;?>
+			</div>
+		</div>
+	</div>
+</div>

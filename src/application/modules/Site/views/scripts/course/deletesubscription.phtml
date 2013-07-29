@@ -1,0 +1,14 @@
+<?php $this->pageTitle("Course - Delete Subscription"); ?>
+<h1>Delete Subscription</h1>
+<h2>For: <?php echo $this->escape($this->subscription->getUser()->getEmail());?></h2>
+
+
+<p>
+	<strong>WARNING: </strong>Deleting anyone's subscription removes any of
+	their historical progress, their access to this course, and all
+	comments and questions that they have made. <strong>You can also delete
+		your own access.</strong> If you do that then the only way to regain
+	access is to have an administrator re-add you with a provider role.
+</p>
+<?php echo $this->form;?>
+

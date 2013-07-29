@@ -1,0 +1,31 @@
+<?php $this->pageTitle("Course - Edit Subscription"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h1>Edit Subscription</h1>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+
+				<h2>For: <?php echo $this->escape($this->subscription->getUser()->getEmail());?></h2>
+				<p>You may change the role of any subscriber.</p>
+				<ul>
+					<li>Visitors -- They cant do anything.</li>
+					<li>Users - They can only view content if the content has been made
+						available to them.</li>
+					<li>Subscribers - These individuals can view content made visible
+						to users and subscribers. They can also comment and ask questions.</li>
+					<li>Providers own a course. They manage all aspects about the
+						course. Grant this to anyone who must manage the course.</li>
+				</ul>
+				<p>
+					<strong>WARNING: </strong>If you accidentally demote yourself then
+					you must contact the Administrator.
+				</p>
+            <?php echo $this->form;?>
+            </div>
+		</div>
+	</div>
+</div>
+

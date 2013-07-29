@@ -1,0 +1,35 @@
+<?php $this->pageTitle("Course - View"); ?>
+<?php
+// If there isn't a course, return false so no errors are displayed.
+if (!isset($this->course)) {
+	return false;
+}
+?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<h3><?php echo $this->escape($this->course->getTitle()); ?></h3>
+			<blockquote><?php echo $this->escape($this->course->getDescription()); ?></blockquote>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<!--  Left Panel -->
+	<div class="span12">
+		<div id="result"></div>
+		<div class="module">
+			<div class="heading">
+				<h2>Course Details</h2>
+			</div>
+			<div class="content">
+			<?php if ($this->sortedContent) : ?>
+			<?php echo $this->partial('partials/curriculum.phtml', array('sortedContent' => $this->sortedContent, 'completedContent' => $this->completedContent, 'completedAssessments' => $this->completedAssessments)); ?>
+			<?php else : ?>
+			<a href="/course/subscribe/<?php echo $this->course->getId(); ?>" class="btn btn-primary btn-large">Take This Course</a><br />
+			<p><strong>Description: </strong><?php echo $this->escape($this->course->getDescription()); ?></p><br />
+			<?php endif; ?>
+			</div>
+		</div>
+    </div>
+</div>

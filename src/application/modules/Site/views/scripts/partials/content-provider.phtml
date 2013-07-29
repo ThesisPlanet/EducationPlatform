@@ -1,0 +1,55 @@
+<?php
+if (preg_match("/Audio/", $this->obj['__class__'])) {
+    $type = "audio";
+}
+if (preg_match("/File/", $this->obj['__class__'])) {
+    $type = "file";
+}
+if (preg_match("/Video/", $this->obj['__class__'])) {
+    $type = "video";
+}
+if (preg_match("/Assessment/", $this->obj['__class__'])) {
+    $type = "assessment";
+}
+?>
+<!--  description open -->
+
+<li id="topic<?php echo $this->obj['id'];?>" class="ui-state-default"
+	data-content-id="<?php echo $this->obj['id'];?>"
+	data-content-type="<?php echo $this->obj['__class__'];?>">
+	<div class="descr_div">
+		<span><a class="btn btn-warning"
+			href="/<?php echo $type;?>/edit/<?php echo $this->obj['id'];?>">Edit</a></span>
+		<span><a class="btn btn-danger"
+			href="/<?php echo $type;?>/delete/<?php echo $this->obj['id'];?>">Delete</a></span>
+		<span class="lecture"><a href="javascript:;"
+			class="<?php if (isset($this->completed) && $this->completed == true) {echo "grn";}else{ echo "gre";}?>">Lecture
+				<?php echo ($this->obj['sortOrder']);?></a></span> <span
+			class="mini_desc"><a
+			href="/<?php echo $type;?>/view/<?php
+echo $this->obj['id'];
+?>"> <?php
+echo $this->obj['title'];
+if ($this->obj['status'] == "error") {
+    echo " <strong>***Error***</strong>";
+}
+?></a></span> <span class="time">
+<?php
+switch ($type) {
+    case 'audio':
+        echo $this->obj['durationInSeconds'] . " seconds";
+        break;
+    case 'video':
+        echo $this->obj['durationInSeconds'] . " seconds";
+        break;
+    case 'file':
+        echo round($this->obj['originalSizeKB'], 0) . " KB";
+        break;
+    case 'assessment':
+        break;
+}
+?>
+</span>
+	</div>
+</li>
+<!-- description close -->

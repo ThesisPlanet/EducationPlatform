@@ -1,0 +1,17 @@
+<div class="course_content_sortable">
+	<ol>
+		{{#sections}}
+		<li>
+			<div class="chapter" {{#if chapter.id}}data-id="{{chapter.id}}"{{/if}}>{{#if
+				chapter}} {{chapter.text}} {{else}}Untitled{{/if}}</div>
+			<ol>
+				{{#content}}
+				<li class="content no-nesting">
+					<div class="mini_descr no-nesting" data-id="{{id}}">
+						<span class="">{{title}}</span>
+					</div>
+				</li> {{/content}}
+			</ol>
+		</li>{{/sections}}
+	</ol>
+</div>

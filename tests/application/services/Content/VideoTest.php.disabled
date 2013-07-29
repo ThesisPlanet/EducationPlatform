@@ -1,0 +1,573 @@
+<?php
+/**
+ * Thesis Planet - Digital Education Platform
+ *
+ * LICENSE
+ *
+ * This source file is subject to the licensing terms found at http://www.thesisplanet.com/platform/tos
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to sales@thesisplanet.com so we can send you a copy immediately.
+ *
+ * @category  ThesisPlanet
+ * @copyright  Copyright (c) 2009-2012 Thesis Planet, LLC. All Rights Reserved. (http://www.thesisplanet.com)
+ * @license   http://www.thesisplanet.com/platform/tos   ** DUAL LICENSED **  #1 - Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. #2 - Thesis Planet Commercial Use EULA.
+ */
+namespace tests\application\services\Content;
+
+/**
+ * @backupGlobals disabled
+ * @backupStaticAttributes disabled
+ */
+class VideoTest extends \Zend_Test_PHPUnit_ControllerTestCase
+{
+
+    protected $_service = null;
+
+    protected $_userService = null;
+
+    protected $_courseId = null;
+
+    public function setUp ()
+    {
+        $this->_service = new \App\Service\Content\Video();
+        $this->_userService = new \App\Service\User();
+        $this->_courseService = new \App\Service\Course();
+        
+        // create a course
+        
+        $courseData = array(
+                'topic' => "Computer Science",
+                'description' => "Course Testing",
+                'title' => "AUDIO - " . time(),
+                'isApprovalRequired' => 0,
+                'isSearchable' => 0,
+                'isEnabled' => 1,
+                'price' => 150
+        );
+        
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $this->_courseId = $this->_courseService->acl_create($courseData);
+        // Expect an integer
+        $this->assertInternalType('integer', $this->_courseId);
+        if (file_exists(__DIR__ . "/_files/video_start.mp4"))
+            system("rm " . __DIR__ . "/_files/video_start.mp4");
+    }
+
+    public function testACL ()
+    {
+        // Visitor
+        $user = $this->_userService->findByEmail("testvisitor@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        // Load up an video file
+        $a = $this->_service->find(3);
+        
+        if (! is_object($a)) {
+            $this->fail("No object found");
+        }
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertFalse(
+                $this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getStreamUrl"));
+        
+        // User
+        $user = $this->_userService->findByEmail("testuser@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertFalse(
+                $this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_getStreamUrl"));
+        
+        // Subscriber
+        $user = $this->_userService->findByEmail(
+                "testsubscriber@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertFalse($this->_service->isAllowed($a, "acl_create"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_update"));
+        $this->assertFalse($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getStreamUrl"));
+        
+        // Provider
+        $user = $this->_userService->findByEmail(
+                "testprovider@thesisplanet.com");
+        $this->_service->setUser($user);
+        
+        $this->assertTrue($this->_service->isAllowed($a, "acl_create"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_update"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_delete"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getThumbnailUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getDownloadUrl"));
+        $this->assertTrue($this->_service->isAllowed($a, "acl_getStreamUrl"));
+        // Admin
+    }
+
+    public function testSetUserNoObject ()
+    {
+        $user = "";
+        $this->setExpectedException("exception", 
+                \App\Service\Content\Video::USER_NOT_OBJECT);
+        $this->_service->setUser($user);
+    }
+
+    public function testFindByCourseId ()
+    {
+        $this->assertInternalType('array', $this->_service->findByCourseId(1));
+    }
+
+    public function testGetDeleteForm ()
+    {
+        $this->AssertInstanceOf('\App\Form\Content\VideoDelete', 
+                $this->_service->getDeleteForm());
+    }
+
+    public function testGetForm ()
+    {
+        $this->AssertInstanceOf('\App\Form\Content\Video', 
+                $this->_service->getForm());
+    }
+
+    public function testGetStreamUrl ()
+    {
+        $videoData = array(
+                'description' => "Test Video Description",
+                'course' => $this->_courseId,
+                'title' => "Test Video Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'video_final.mp4',
+                        'type' => 'video/mpeg',
+                        'size' => '2187476',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'video.mp4', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\Video', $form);
+        
+        if (! $form->isValid($videoData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Video testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($videoData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        $this->assertContains("?Expires", 
+                $this->_service->acl_getStreamUrl($contentId));
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+    }
+
+    public function testDistributionStreamer ()
+    {
+        $this->assertInternalType('string', 
+                $this->_service->getDistributionStreamer());
+    }
+
+    public function testCreate ()
+    {
+        $videoData = array(
+                'description' => "Test Video Description",
+                'chapter' => "Sample",
+                'course' => $this->_courseId,
+                'title' => "Test Video Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'video_final.mp4',
+                        'type' => 'video/mpeg',
+                        'size' => '2187476',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'video.mp4', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\Video', $form);
+        
+        if (! $form->isValid($videoData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Video testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($videoData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        // Additional tests for aContent
+        $adminUser = $this->_userService->findByEmail(
+                'testadmin@thesisplanet.com');
+        $this->_service->setUser($adminUser);
+        
+        $this->assertTrue($this->_service->acl_publish($contentId));
+        $this->assertTrue($this->_service->acl_unpublish($contentId));
+        $this->assertTrue($this->_service->acl_enable($contentId));
+        $this->assertTrue($this->_service->acl_disable($contentId));
+        
+        // de-elevate back to a provider.
+        $this->_service->setUser($user);
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+    }
+
+    public function testUpdate ()
+    {
+        $videoData = array(
+                'description' => "Test Video Description",
+                'course' => $this->_courseId,
+                'title' => "Test Video Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'video_final.mp4',
+                        'type' => 'video/mpeg',
+                        'size' => '2187476',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'video.mp4', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\Video', $form);
+        
+        if (! $form->isValid($videoData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Video testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($videoData);
+        
+        $obj = $this->_service->find($contentId);
+        
+        $this->assertInternalType('integer', $obj->getId());
+        
+        $videoData = $obj->toArray();
+        
+        $this->assertInternalType('array', $videoData);
+        $videoData['title'] = 'updated Title';
+        $videoData['role'] = 'provider';
+        
+        $result = $this->_service->acl_update($contentId, $videoData);
+        
+        $this->assertTrue($result);
+        
+        $this->AssertEquals('updated Title', 
+                $this->_service->find($contentId)
+                    ->getTitle());
+        $this->AssertEquals('provider', 
+                $this->_service->find($contentId)
+                    ->getRole());
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $this->assertTrue($result);
+    }
+    // This is effectively an integration test.
+    public function testUploadToAndDeleteFromCloud ()
+    {
+        $videoData = array(
+                'description' => "Test Video Description",
+                'course' => $this->_courseId,
+                'title' => "Test Video Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'video_final.mp4',
+                        'type' => 'video/mpeg',
+                        'size' => '2187476',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'video.mp4', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4'));
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\Video', $form);
+        
+        if (! $form->isValid($videoData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Video testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($videoData);
+        
+        $this->assertInternalType('integer', $contentId);
+        $jobParams = array(
+                'environment' => APPLICATION_ENV,
+                'server' => \Zend_Registry::getInstance()->get('system')->PRIVATE_IP
+        );
+        
+        $this->assertTrue(
+                $this->_service->system_sendDataToCloud($contentId, $jobParams));
+        
+        $this->assertInternalType('array', 
+                $this->_service->system_processData($contentId, array()));
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+    }
+
+    public function testGetDownloadUrl ()
+    {
+        $videoData = array(
+                'description' => "Test Video Description",
+                'course' => $this->_courseId,
+                'title' => "Test Video Title",
+                'isPublished' => true,
+                'role' => "subscriber"
+        );
+        
+        $form = $this->_service->getForm();
+        
+        $fileArray = array(
+                'file' => array(
+                        'name' => 'video_final.mp4',
+                        'type' => 'video/mpeg',
+                        'size' => '2187476',
+                        'tmp_name' => dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4',
+                                'error' => 0
+                )
+        );
+        
+        $this->assertTrue(
+                copy(
+                        dirname(__FILE__) . DIRECTORY_SEPARATOR . '_files' .
+                                 DIRECTORY_SEPARATOR . 'video.mp4', 
+                                dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                                 '_files' . DIRECTORY_SEPARATOR .
+                                 'video_start.mp4'));
+        
+        // Replace the form's File transfer adapter to enable mocking.
+        
+        $fileTransferAdapter = new \App\Test\File\Transfer\Adapter\HttpSimulate();
+        $fileTransferAdapter->setFiles($fileArray);
+        
+        $form->getElement('file')->setTransferAdapter($fileTransferAdapter);
+        
+        $this->assertInstanceOf('\App\Test\File\Transfer\Adapter\HttpSimulate', 
+                $form->getElement('file')
+                    ->getTransferAdapter());
+        
+        $this->assertInstanceOf('\App\Form\Content\Video', $form);
+        
+        if (! $form->isValid($videoData)) {
+            throw new \exception(var_dump($form->getErrors()));
+        }
+        
+        // Do Video testing.
+        $user = $this->_userService->findByEmail(
+                'testprovider@thesisplanet.com');
+        
+        $this->assertInternalType('integer', $user->getId());
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+        
+        $contentId = $this->_service->acl_create($videoData);
+        
+        $this->assertInternalType('integer', $contentId);
+        
+        $url = $this->_service->acl_getDownloadUrl($contentId);
+        
+        $this->assertContains("?Expires=", $url);
+        
+        $this->assertTrue($this->_service->acl_delete($contentId));
+        
+        $user = $this->_userService->findByEmail('testadmin@thesisplanet.com');
+        $this->_courseService->setUser($user);
+        $this->_service->setUser($user);
+    }
+
+    public function testUploadNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\Video::NOT_FOUND);
+        
+        $this->_service->system_processData("0", array());
+    }
+
+    public function testDeleteFromLocalNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\Video::NOT_FOUND);
+        
+        $this->_service->system_deleteLocalData("0");
+    }
+
+    public function testDeleteFromCloudNonObject ()
+    {
+        $this->setExpectedException("exception", 
+                \App\Service\Content\Video::NOT_FOUND);
+        
+        $this->_service->system_deleteCloudData("0");
+    }
+
+    public function tearDown ()
+    {
+        $user = $this->_userService->findByEmail("testadmin@thesisplanet.com");
+        $this->_courseService->setUser($user);
+        $result = $this->_courseService->acl_delete($this->_courseId);
+        $this->assertTrue($result);
+    }
+}

@@ -1,0 +1,25 @@
+<?php $this->pageTitle("Courses"); ?>
+<?php echo $this->partial("partials/courseIndexSearchBar.phtml", array('active' => "index"));?>
+<div class="row">
+	<div class="span12">
+		<div class="course_div">
+			<div class="row">
+    <?php
+    if (isset($this->list)) {
+        
+        foreach ($this->list as $key => $courseObj) {
+            if ($courseObj->getIsEnabled() == true) {
+                
+                echo $this->partial('partials/courseListing.phtml', 
+                        array(
+                                "course" => $courseObj,
+                                "service" => new \App\service\Course()
+                        ));
+            }
+        }
+    }
+    ?>
+</div>
+		</div>
+	</div>
+</div>

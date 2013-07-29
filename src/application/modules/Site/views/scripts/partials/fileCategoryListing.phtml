@@ -1,0 +1,9 @@
+<div class="fileCategoryListing">
+	<a href="/file/view/<?php echo $this->file->getId();?>">
+	<div class="thumbnail"><img src="/img/icons/filetypes/<?php echo $this->file->getOriginalExtension();?>.png" width="32" height="32" alt="File Format: <?php echo $this->file->getOriginalExtension();?>" /></div></a>
+	<div class="digest">
+		<h3> <a href="/file/view/<?php echo $this->file->getId();?>"> <?php echo $this->file->getTitle();?></a></h3>
+		<div class="description"><?php echo $this->file->getDescription(); ?>&hellip;</div>
+		</div>
+	<div class="clear"></div>
+</div>

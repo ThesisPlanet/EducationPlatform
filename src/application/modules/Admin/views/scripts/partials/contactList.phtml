@@ -1,0 +1,6 @@
+<tr>
+	<td><?php echo $this->contact->getFirstName() . " " .$this->contact->getLastName();?></td>
+	<td><?php echo $this->contact->getPhone();?></td>
+	<td><?php echo $this->contact->getEmail();?></td>
+	<td><?php if ($this->contact->getDesignated()) {echo "yes";}else{echo "No";}?></td>
+</tr>

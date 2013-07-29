@@ -1,0 +1,46 @@
+<?php $this->pageTitle("Assessment - Student Scores"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/course/view/<?php echo $this->escape($this->assessment->getCourse()->getId());?>"><span>Back
+							to Course</span></a></li>
+				<li><a
+					href="/assessment/view/<?php echo $this->escape($this->assessment->getId());?>"><span>Back
+							to Assessment</span></a></li>
+
+			</ul>
+		</div>
+
+		<div class="module">
+			<div class="heading">
+				<h2>All results</h2>
+			</div>
+			<div class="content">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Actions</th>
+							<th>Student Name</th>
+							<th>Started At</th>
+							<th>Score</th>
+						</tr>
+					</thead>
+					<tbody>
+                        <?php foreach ($this->assessment->getAttempts() as $key => $attemptObj):?>
+					    <tr>
+							<td><a class="btn"
+								href="/assessment/view-results/<?php echo $attemptObj->getId();?>">View</a></td>
+							<td><?php echo $this->escape($attemptObj->getSubscription()->getUser()->getFirstname() . " " . $attemptObj->getSubscription()->getUser()->getLastname());?></td>
+							<td><?php echo $this->escape($attemptObj->getStartedAt()->format("Y-m-d h:i:s"));?> UTC</td>
+							<td><?php echo $this->escape($attemptObj->getScore() * 100)?>%</td>
+						</tr>
+						
+					<?php endforeach;?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

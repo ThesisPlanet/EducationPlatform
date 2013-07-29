@@ -1,0 +1,20 @@
+{{#unless courses}}
+<h2>No courses were found with the terms you provided.</h2>
+{{/unless}}
+<ul>
+{{#each courses}}
+	<li>
+		<div class="course_listing_partial">
+			<a href="/course/view/{{id}}"><img class="course_image"
+				src="{{image_url}}" alt="{{title}}" /></a> <br />
+			<h3>
+				<a href="/course/view/{{id}}"> {{title}} </a>
+			</h3>
+			<p>{{description}}</p>
+			<div class="clr"></div>
+			<a class="btn" href="javascript:;"> {{student_count}} </a> <a
+				href="javascript:;" class="btn">Rating</a>
+		</div>
+	</li>
+{{/each}}
+</ul>

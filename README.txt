@@ -1,17 +1,50 @@
-EducationPlatform
-==========================
+Education Platform - By Thesis Planet, LLC.
+==============
 
-* Installing Education Platform from scratch
+Copyright 2009-2013 © Thesis Planet, LLC. All rights reserved. See License.MD for licensing details.
+
+* Every organization should be able to deliver an excellent educational environment to its employees and volunteers.
+At this point in time, solutions that provide a decent digital learning environment are extremely expensive, or overly complex to implement and thereby unavailable to most small-to-medium sized businesses and non-profits as a practical way of delivering education within an organization.
 
 
+Technical Goals:
+--------
+* Provide a platform where individuals and organizations can offer training material on a variety of topics to authorized users (typically employees/customers).
+* Create a superior learning experience through writing high-quality code deployed on well-architected infrastructure.
+
+More holistic goals:
+* Create a universal training system that can be used by individuals, businesses, and non-profits to enhance individual productivity by creating a more collaborative learning environment.
+* Increase the efficiency by which training is delivered.
+* Increase the ease by which people can collaborate on learning
+* the system should be secure and support high-security, high-privacy requirements.
+
+Infrastructure notes:
+--------
+Virtualized RHEL/Centos x64 OS.
+Configurations/System consistency managed via Puppet (on Fully Managed instances of Thesis Planet's Education Platform).
+Application packaged as an RPM file and installed via YUM (based on puppet system profile).
+
+Website: http://www.thesisplanet.com
 
 
-When I first started working on Education Platform, my goal was to help improve how education was delivered at companies and in the non-profit sector. During the last three years, the online education sector has seen a number of excellent products pop up that are designed to provide global education that is useful to a majority of the population. Education Platform is a little different in that each instance is designed to be used on-site for a single organization or within a business (instead of a behemoth platform for everyone). 
-With no further adieu, I would like to invite you (and anyone else you know) to participate in improving Educational delivery for your organization, your school, and everyone else by asking you to use Education Platform. If you are a developer, you are needed! If you can read and write, you are sorely needed to help create documentation. If you are more of a sys-admin type of person, you too are needed to help file bugs. If you are just someone who wants to use the software, you too are needed to help identify new features that you would like to see.
+Note from Jack Peterson - When I first started working on Education Platform, my goal was to help improve how education was delivered at companies and in the non-profit sector. 
+During the last three years, the online education sector has seen a number of excellent products pop up that are designed to provide global education that may be useful to a majority of the population; however, those applications are not being made available for the benefit of anyone other than the investors/owners of the software. 
+
+Education Platform is a little different in that each instance is designed to be used on-site for a single organization or within a business (instead of a behemoth platform for everyone to use for the sole benefit of the owners of the platform). 
+
+With no further adieu, I would like to invite you (and anyone else you know) to participate in improving how Education occurs for your organization, your school, and everyone else by asking you to use Education Platform. 
+If you are a developer, you are needed! If you can read and write, you are sorely needed to help create documentation. If you are more of a sys-admin type of person, you too are needed to help file bugs. 
+If you are just someone who wants to use the software, you too are needed to help identify new features that you would like to see.
 This article will be focused on how to install Education Platform and get started. Later articles will be focused on how to contribute back!
-WARNINNG: From here on out, this article becomes rather technical.
+
+
+
+WARNINNG: From here on out, this "README" becomes rather technical.
 Perform a clean CentOS 6.x x86_64 installation onto a server of your choice.
 Server specifications: At this point in time, 1 GB of RAM should be sufficient. I typically give my servers 16GB of hard drive space and one NIC. Education Platform stores a few files during its operations (e.g., a user uploads a video). Those files are then pushed up to Amazon Web Services Simple Storage Service and then subsequently deleted from the server.
+
+Video of the below steps can be found at http://www.youtube.com/watch?v=VB0K8zH7TmE (~ 25 minutes).
+
 
 Install system updates (I started with CentOS 6.4).
 $ yum upgrade -y
@@ -384,3 +417,4 @@ Let's restart the server just to ensure that everything started properly ?
 Navigate over to http://YOUR_IP_ADDRESS_OR_DOMAIN_NAME.
 
 If everything worked out then you should have a working Education Platform server. 
+

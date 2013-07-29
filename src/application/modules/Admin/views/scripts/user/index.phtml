@@ -1,0 +1,40 @@
+<?php $this->pageTitle("Administration - Users"); ?>
+<div class="row">
+<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+
+<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>User management</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<a class="btn btn-primary" href="/Admin/user/add">Add a new user</a>
+				<table class="table table-bordered">
+					<tr>
+						<th colspan="2"></th>
+						<th>Email Address</th>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Role</th>
+					</tr>
+<?php
+foreach ($this->userList as $key => $user) {
+    echo $this->partial('partials/userList.phtml', 
+            array(
+                    "user" => $user
+            ));
+}
+?>
+</table>
+			</div>
+		</div>
+
+	</div>
+</div>

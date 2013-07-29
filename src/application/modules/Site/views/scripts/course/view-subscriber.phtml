@@ -1,0 +1,91 @@
+<?php $this->pageTitle("Course - View"); ?>
+<?php
+// If there isn't a course, return false so no errors are displayed.
+if (! isset($this->course)) {
+    return false;
+}
+?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<h3><?php echo $this->escape($this->course->getTitle());?></h3>
+			<blockquote><?php echo $this->escape($this->course->getDescription());?></blockquote>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<!--  Left Panel -->
+	<div class="span8">
+		<div id="result"></div>
+		<div class="module">
+			<div class="heading">
+				<h2>Curriculum</h2>
+		<?php if ($this->service->isAllowed($this->course, "acl_update")):?>
+		 <ul class="sbcbr_nav">
+					<li><a
+						href="/course/curriculum/<?php echo $this->escape($this->course->getId());?>"><span
+							id="gears">Course Settings</span></a></li>
+				</ul>
+        <?php endif;?>
+			</div>
+			<div class="content">
+			<?php echo $this->partial('partials/curriculum.phtml', array('sortedContent' => $this->sortedContent, 'completedContent' => $this->completedContent, 'completedAssessments' => $this->completedAssessments));?>
+			</div>
+		</div>
+	</div>
+
+	<!--  Right Panel -->
+	<div class="span4">
+		<!--  Progress Bar -->
+		<div class="module" id="course_progress">
+			<div class="tab_cont">
+				<div class="heading slider">
+					<a href="javascript:;">Your Progress <span class="togglemaximized">&nbsp;</span></a>
+				</div>
+				<div class="slide_div content">
+					<div class="progress progress-striped">
+						<div class="bar" style="width: <?php echo ($this->percentComplete * 100);?>%;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!--  Announcements Module -->
+		<div class="module" id="announcements">
+			<div class="tab_cont">
+				<div class="heading slider">
+					<a href="javascript:;">Announcements<span class="togglemaximized">&nbsp;</span></a>
+				</div>
+				<div class="slide_div content">
+					<div id="announcementsWidget"></div>
+				</div>
+			</div>
+		</div>
+
+		<!--  /Announcements Module -->
+		<!-- Questions Module -->
+
+		<div class="module" id="questions">
+			<div class="tab_cont">
+				<div class="heading slider">
+					<a href="javascript:;">Questions <span class="togglemaximized">&nbsp;</span></a>
+				</div>
+				<div class="content slide_div"
+					style="height: 300px; overflow: auto;">
+					<div id="questionsWidget"></div>
+				</div>
+			</div>
+		</div>
+		<!--  /Questions module -->
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+window.courseId = <?php echo $this->course->getId();?>;
+coursePageLoad();
+});
+</script>

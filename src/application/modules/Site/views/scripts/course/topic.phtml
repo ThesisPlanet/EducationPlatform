@@ -1,0 +1,41 @@
+<?php $this->pageTitle("Courses by Topic"); ?>
+<?php echo $this->partial("partials/courseIndexSearchBar.phtml", array('active' => "topic"));?>
+<div class="row">
+	<div class="span12">
+		<div class="course_div">
+			<div class="row">
+    <?php
+    if (isset($this->list)) {
+        
+        foreach ($this->list as $key => $courseObj) {
+            if ($courseObj->getIsEnabled() == true) {
+                
+                echo $this->partial('partials/courseListing.phtml', 
+                        array(
+                                "course" => $courseObj,
+                                "service" => new \App\service\Course()
+                        ));
+            }
+        }
+    }
+    ?>
+</div>
+		</div>
+		<?php
+if (isset($this->topicList)) {
+    ?>
+<h2>Topics</h2>
+<?php
+    echo "<div class=\"course_inn\"><ul>";
+    foreach ($this->topicList as $key => $topic) :
+        ?>
+<li><a href="/course/topic/<?php echo $this->escape($topic);?>">&raquo; <?php echo $topic;?></a></li>
+<?php
+    endforeach
+    ;
+    echo "</ul></div>";
+}
+?>
+	</div>
+</div>
+

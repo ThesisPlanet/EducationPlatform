@@ -1,0 +1,19 @@
+<?php $this->pageTitle("My Profile"); ?>
+<br />
+<div class="module">
+	<div class="heading">
+		<h1>My Profile</h1>
+	</div>
+	<div class="content">
+		<div class="row">
+			<div class="span5">
+	<?php echo $this->form;?>
+</div>
+			<div class="span5">
+				<h3>Current profile picture:</h3>
+				<img src="<?php echo $this->pic_url?>" alt="Profile Picture" />
+			</div>
+		</div>
+	</div>
+</div>
+

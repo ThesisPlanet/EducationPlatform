@@ -1,0 +1,60 @@
+<?php $this->pageTitle("Assessment - Edit"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h2>Edit Assessment</h2>
+				<ul class="sbcbr_nav">
+					<li><a
+						href="/course/curriculum/<?php echo $this->escape($this->course->getId());?>"><span>Back
+								to Curriculum</span></a></li>
+					<li><a
+						href="/assessment/addTF/<?php echo $this->escape($this->assessment->getId());?>"><span>Add
+								a True/False question</span> </a></li>
+					<li><a
+						href="/assessment/addMC/<?php echo $this->escape($this->assessment->getId());?>"><span>Add
+								a Multiple Choice question</span> </a></li>
+					<li><a
+						href="/assessment/addFIB/<?php echo $this->escape($this->assessment->getId());?>"><span>Add
+								a Fill In The Blank question</span> </a></li>
+					<li><a
+						href="/assessment/viewstudentscores/<?php echo $this->escape($this->assessment->getId());?>"><span>View
+								Results</span> </a></li>
+					<li><a
+						href="/assessment/edit/<?php echo $this->escape($this->assessment->getId());?>"><span>Assessment
+								Settings</span> </a></li>
+				</ul>
+			</div>
+			<div class="content">
+				<p>Question order will be randomized for each attempt on a test.</p>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Edit</th>
+							<th>Delete</th>
+							<th>Question</th>
+						</tr>
+					</thead>
+					<tbody>
+							<?php
+    $questions = $this->assessment->getQuestions();
+    if (count($questions) > 0) {
+        foreach ($this->assessment->getQuestions() as $key => $questionObj) {
+            ?>			
+						<tr>
+							<td><a class="btn btn-warning"
+								href="/assessment/edit-question/<?php echo $questionObj->getId();?>">Edit</a></td>
+							<td><a class="btn btn-danger"
+								href="/assessment/delete-question/<?php echo $questionObj->getId();?>">Delete</a></td>
+							<td><?php echo $this->escape($questionObj->getTitle());?></td>
+						</tr>
+							<?php
+        }
+    }
+    ?>
+                </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

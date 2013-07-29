@@ -1,0 +1,156 @@
+<?php $this->pageTitle("Course - Curriculum"); ?>
+<?php
+// If there isn't a course, return false so no errors are displayed.
+if (! isset($this->course)) {
+    return false;
+}
+?>
+<div class="row">
+<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+	<!--  Left Panel -->
+	<div class="span9">
+		<div class="head_main">
+			<h3><?php echo $this->course->getTitle();?></h3>
+		</div>
+
+		<div id="result"></div>
+		<div class="module">
+			<div class="heading">
+				<h2>Curriculum</h2>
+					<?php if ($this->service->isAllowed($this->course, "acl_update")):?>
+		 <ul class="sbcbr_nav">
+					<li><a
+						href="/course/addChapter/<?php echo $this->escape($this->course->getId());?>"><span>Add
+								Chapter</span></a></li>
+					<li><a
+						href="/audio/add/<?php echo $this->escape($this->course->getId());?>"><span
+							id="audio">Add Audio</span></a></li>
+					<li><a
+						href="/file/add/<?php echo $this->escape($this->course->getId());?>"><span
+							id="file">Add File</span></a></li>
+					<li><a
+						href="/video/add/<?php echo $this->escape($this->course->getId());?>"><span
+							id="video">Add Video</span></a></li>
+					<li><a
+						href="/course/assessment/add/<?php echo $this->escape($this->course->getId());?>"><span
+							id="assessment">Add Quiz</span></a></li>
+
+				</ul>
+    <?php endif;?>
+    			</div>
+			<div class="content view_div">
+                <?php echo $this->partial('partials/curriculum-provider.phtml', array('sortedContent' => $this->sortedContent, 'completedContent' => $this->completedContent));?>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+window.courseId = <?php echo $this->course->getId();?>;
+coursePageLoad();
+getNewIDs();
+});
+
+//Global Variables
+var Chapter_name;
+var TopicID;
+var oldChapterID;
+var oldChapterID1;
+var newChapterID;
+var newChapterID1;
+var oldChapter_name;
+
+
+$(function () {
+    makeSortable(); 
+    makeChaptersSortable();  
+});
+
+function makeSortable()
+{
+	 var chapters=$("div.chapter_block ul");
+     $(chapters).sortable({
+         connectWith: ".connectedSortable",
+     }).disableSelection();
+     $(chapters).droppable({
+         drop: function (ev, ui) {
+             TopicID = $(ui.draggable).attr('id');
+             setTimeout('submitSort()', 100);  
+             setTimeout('getNewIDs()', 100); 
+           // database save code will go here
+         }
+     });
+}
+
+function makeChaptersSortable()
+{
+	 var chapters=$("div#divChapters");
+     $(chapters).sortable().disableSelection();
+     $(chapters).droppable({
+         drop: function (ev, ui) {
+             TopicID = $(ui.draggable).attr('id');
+             setTimeout('submitSort()', 100);  
+             setTimeout('getNewIDs()', 100); 
+           // database save code will go here
+         }
+     });
+}
+
+function deleteChapter($chapterId)
+{
+	api.course.acl_deleteChapter($chapterId);
+	$("div.content .view_div").html(api.course.acl_listContentOrderAsHTML(window.courseId));
+	  makeSortable();
+	
+}
+  
+  function submitSort()
+  {
+	  var arrData = getContentArr();
+	  var result = api.course.acl_providerUpdateContentSort(window.courseId, arrData);
+	  $("div.content .view_div").html(api.course.acl_listContentOrderAsHTML(window.courseId));
+	  makeSortable();
+	  makeChaptersSortable();
+	  return result;
+  }
+  function getContentArr()
+  {
+        var out = {};
+	    $("div.chapter_block ul").each(function() {
+		    var chapterId = $(this).data("chapter-id");
+		    out[chapterId] = {};
+		    $(this).children("ul > li").each(function() {
+                out[chapterId][$(this).data("content-id")] = $(this).data("content-type");
+		    });
+		    });
+	    return out;
+  }
+  function getNewIDs()
+        {
+            //alert("here");
+            $("#divChapters ul").each(function(i){
+              //          alert("chapter: " + $(this).attr('data-chapter-id'));
+                //        alert("Li items " + $(this).find('li').size());
+                        if($(this).find('li').size()==0)
+                        {
+                           $("#chap"+$(this).attr('data-chapter-id')).show(); 
+                        }
+                        else
+                        {
+                            $("#chap"+$(this).attr('data-chapter-id')).hide();
+                        }
+//$(this).find('li').each(function(i){
+//alert("Topic: " +$(this).attr('id'));                                              
+//});                   
+           }); 
+        }
+
+</script>

@@ -1,0 +1,57 @@
+<?php $this->pageTitle("Video - View"); ?>
+<script type="text/javascript">
+		$(document).ready(
+				function() {
+					$("#tabs").wijtabs();
+
+				});
+	</script>
+<div class="clr"></div>
+
+<div class="content">
+	<div class="nav_main">
+		<h3><?php echo $this->escape($this->video->getTitle());?></h3>
+		<!-- heading close -->
+		<ul>
+			<li><a
+				href="/course/view/<?php echo $this->video->getCourse()->getId();?>">&laquo;
+					Go Back</a></li>
+			<li>
+			<?php
+if ($this->isComplete == true) {
+    ?>  
+<a class="isCompleted"
+				onclick="markIncomplete('<?php echo $this->video->getCourse()->getId();?>','<?php echo $this->video->getId();?>');">Mark
+					Incomplete</a>                  
+<?php
+} else {
+    ?>
+<a class="isCompleted"
+				onclick="markComplete('<?php echo $this->video->getCourse()->getId();?>','<?php echo $this->video->getId();?>');">Mark
+					Complete</a>
+<?php
+}
+?>			
+			
+			</li>
+		</ul>
+	</div>
+	<!-- navigation close -->
+
+	<div class="inn_div">
+		<div class="vid_div">
+    <?php
+    if (isset($this->video) and $this->video != null) {
+        echo $this->partial('partials/video.phtml', 
+                array(
+                        "video" => $this->video,
+                        "service" => $this->service
+                ));
+    }
+    ?>
+   </div>
+	</div>
+	<!-- courses close -->
+
+</div>
+<!-- container close -->

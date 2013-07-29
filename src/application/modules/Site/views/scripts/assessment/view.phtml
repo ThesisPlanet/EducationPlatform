@@ -1,0 +1,62 @@
+<?php $this->pageTitle("Assessment - View"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h2>Assessment View</h2>
+				<ul class="sbcbr_nav">
+					<li><a
+						href="/course/view/<?php echo $this->escape($this->course->getId());?>">
+							Back to Course</a></li><?php if ($this->service->isAllowed($this->assessment->getCourse(), "acl_update")):?>
+							<li><a
+						href="/course/assessment/edit/<?php echo $this->assessment->getId();?>">Edit
+							Assessment</a></li><?php endif;?>
+					<li><a
+						href="/course/assessment/take/<?php echo $this->assessment->getId();?>">Make
+							an attempt</a></li>
+
+
+				</ul>
+			</div>
+			<div class="content">
+				<h3><?php echo $this->escape($this->assessment->getTitle());?></h3>
+				<p>
+					<strong>Description: </strong> <?php echo $this->escape($this->assessment->getDescription());?>
+					</p>
+				<hr />
+				<h4>Your highest score:</h4>
+				<blockquote><?php echo $this->escape($this->highScore * 100);?> %</blockquote>
+
+				<h4>Your average score:</h4>
+				<blockquote><?php echo $this->escape($this->averageScore * 100);?> %</blockquote>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Actions</th>
+							<th>Started At</th>
+							<th>Questions Answered</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($this->attempts as $attemptObj) {?>
+						<tr>
+							<td>
+							<?php if (!$attemptObj->getFinishedAt() instanceof \DateTime){?>
+							<a class="btn btn-success"
+								href="/assessment/view-question/<?php echo $attemptObj->getId();?>/0">Resume</a>
+							<?php  } else {?>
+							<a class="btn btn-success"
+								href="/assessment/view-results/<?php echo $attemptObj->getId();?>">View
+									Results</a>
+								<?php  }?>
+								</td>
+							<td><?php echo $attemptObj->getStartedAt()->format("Y-m-d h:i:s");?></td>
+							<td><?php echo count($attemptObj->getAnswers());?></td>
+						</tr>
+                        <?php }?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

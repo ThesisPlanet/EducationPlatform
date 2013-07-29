@@ -1,0 +1,11 @@
+<div id="announcementsDialog"></div>
+{{#if canPost}}
+<a class="tpbtn" data-action="create">Create a new announcement</a>
+<hr />
+{{/if}}
+<ul>
+	{{#announcements}}
+	<li>{{#if canPost}}<a data-action="delete" data-id="{{id}}"><img
+			src="/img/icons/edit-delete-6.png" alt="Delete" /></a> {{/if}} <a
+		data-action="view" data-id="{{id}}">{{title}}</a></li> {{/announcements}}
+</ul>

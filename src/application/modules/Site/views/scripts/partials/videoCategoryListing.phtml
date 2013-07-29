@@ -1,0 +1,9 @@
+<div class="videoCategoryListing">
+	<a href="/video/view/<?php echo $this->video->getId();?>">
+    <div class="thumbnail"><img src="<?php echo $this->videoService->getSmallThumbnailUrl($this->video->getId(),array());?>" width="125" height="94" alt="" /></div></a>
+	<div class="digest">
+			 <h3> <a href="/video/view/<?php echo $this->video->getId();?>"> <?php echo $this->video->getTitle();?></a></h3>
+			<div class="description"><?php echo substr($this->video->getDescription(), 0, 200); ?>&hellip;</div>
+		</div>
+	<div class="clear"></div>
+</div>

@@ -1,0 +1,81 @@
+<?php $this->pageTitle("Course Settings"); ?>
+<div class="row">
+	<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Settings</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content settingsZone"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		window.courseId = "<?php echo $this->course->getId();?>";
+
+
+		$('div.settingsZone')
+		.html(
+				"<div class=\"basicCourseSettings\">"
+						+ api.course
+								.getForm(window.courseId)
+						+ "</div>");
+
+		// Settings submit button interactions
+
+		$("body")
+				.delegate(
+						"div.basicCourseSettings input:submit",
+						"click",
+						function(event) {
+							var data = {
+								'topic' : $('input[name="topic"]')
+										.val(),
+								'title' : $('input[name="title"]')
+										.val(),
+								'description' : $(
+										'input[name="description"]')
+										.val(),
+								'isApprovalRequired' : $(
+										'input[name="isApprovalRequired"]:checked')
+										.val(),
+								'isSearchable' : $(
+										'input[name="isSearchable"]:checked')
+										.val()
+
+							};
+
+							if (api.course.acl_update(
+									window.courseId, data)) {
+								$('div.settingsZone')
+										.html(
+												"<div class=\"basicCourseSettings\">"
+														+ api.course
+																.getForm(window.courseId)
+														+ "</div>");
+								if (!$("div#alert").html()) {
+									$("body div.content ")
+											.first()
+											.prepend(
+													'<div id="alert" class="row"><div class="span10 offset1"><div class="alert">Course settings updated</div></div></div>');
+								} else {
+									$("div#alert").hide("slow")
+											.show("slow");
+								}
+							}
+							event.preventDefault();
+						});
+
+		// /Settings submit button interactions
+
+});
+</script>

@@ -1,0 +1,24 @@
+<div class="span4 module course_listing_partial">
+	<div class="content">
+		<h3>
+			<a href="/course/view/<?php echo $this->course->getId();?>"><?php echo substr($this->escape($this->course->getTitle()), 0, 100);?></a>
+		</h3>
+		<a href="/course/view/<?php echo $this->course->getId();?>"><img
+			class="course_image"
+			src="<?php
+$service = new \App\Service\Course();
+echo $service->acl_getImageUrl($this->course->getId());
+?>"
+			alt="<?php echo $this->escape($this->course->getTitle());?>" /></a> <br />
+		<p><?php echo substr($this->escape($this->course->getDescription()), 0, 200) . "...";?></p>
+		<div class="clr"></div>
+		<a class="btn" href="javascript:;"><?php
+$students = count($this->course->getSubscriptions());
+if ($students == 1) {
+    echo "1 student";
+} else {
+    echo "$students students";
+}
+?></a>
+	</div>
+</div>

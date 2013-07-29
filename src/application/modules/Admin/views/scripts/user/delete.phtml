@@ -1,0 +1,26 @@
+<?php $this->pageTitle("Administration - Delete User"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="module">
+			<div class="heading">
+				<h2>Delete user ID: <?php echo $this->escape($this->id); ?></h2>
+				<ul class="sbcbr_nav">
+					<li><a href="/Admin/user"><span>Back to User management</span></a></li>
+				</ul>
+			</div>
+			<div class="content">
+				<p>
+					<strong>WARNING: </strong>Deleting a user removes everything
+					related to their account (excluding the courses that they create).
+					This action is NOT reversable. Items such as course progress,
+					comments, subscription information, and quiz taking information
+					will be removed.
+				</p>
+			<?php
+echo $this->form;
+?>
+			</div>
+		</div>
+	</div>
+</div>
+

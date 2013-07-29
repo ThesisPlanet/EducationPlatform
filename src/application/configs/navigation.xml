@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<nav>
+		<myAccount>
+			<label>My Account</label>
+			<uri>/My</uri>
+			<resource>my_index</resource>
+			<privilege>index</privilege>
+		</myAccount>
+		<courses>
+			<label>My Courses</label>
+			<uri>/</uri>
+		</courses>
+		<discovercourses>
+			<label>Discover Courses</label>
+			<uri>/course</uri>
+		</discovercourses>
+		<administration>
+			<label>Administration</label>
+			<uri>/Admin</uri>
+			<resource>admin_index</resource>
+			<privilege>index</privilege>
+			<pages>
+				<initialization>
+					<label>Platform Initialization + Backup</label>
+					<uri>/Initialization</uri>
+					<resource>initialization_index</resource>
+					<privilege>index</privilege>
+				</initialization>
+				<monitoring>
+					<label>Monitoring</label>
+					<uri>/Admin/monitoring</uri>
+				</monitoring>
+				<users>
+					<label>Users</label>
+					<uri>/Admin/user</uri>
+				</users>
+			</pages>
+		</administration>
+		<help>
+			<label>Help</label>
+			<uri>/Help</uri>
+			<resource>my_index</resource>
+			<privilege>index</privilege>
+		</help>
+	</nav>
+</config>

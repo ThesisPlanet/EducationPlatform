@@ -1,0 +1,38 @@
+<?php $this->pageTitle("Course - Subscribe"); ?>
+<?php
+// If there isn't a course, return false so no errors are displayed.
+if (! isset($this->course)) {
+    return false;
+}
+?>
+<div class="row">
+	<div class="span6">
+		<h2>Movie block goes here</h2>
+	</div>
+
+	<div class="span6">
+		<h1><?php echo $this->course->getTitle();?></h1>
+		
+		<a href="/course/subscribe/<?php echo $this->course->getId();?>" class="btn btn-primary">Take this course</a>
+		
+	</div>
+</div>
+<hr />
+<div class="row">
+	<div class="span1">Social stuff</div>
+	<div class="span8">
+		<h3>Curriculum</h3>
+		<div class="list">
+			<div class="chapter">Chaper 001</div>
+		</div>
+	</div>
+	<div class="span3">
+		<h3>Subscriber perspective -- Subscribers + reviews</h3>
+		<hr />
+		<h3>TOC</h3>
+		<hr />
+		<h3>Course owner</h3>
+		<hr />
+	</div>
+</div>
+

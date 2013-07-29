@@ -1,0 +1,21 @@
+<div class="audioCategoryListing">
+<div class="thumbnail"><a
+	href="/audio/view/<?php
+echo $this->audio->getId();
+?>"><img src="/img/audioCategoryListing.png" width="94"
+	height="94" alt="no image" /></a></div>
+<div class="digest">
+<h3><a href="/audio/view/<?php
+echo $this->audio->getId();
+?>"> <?php
+echo $this->audio->getTitle();
+?></a></h3>
+<div class="description"><?php
+echo $this->audio->getDescription();
+?>&hellip;</div>
+
+</div>
+
+<div class="clear"></div>
+
+</div>

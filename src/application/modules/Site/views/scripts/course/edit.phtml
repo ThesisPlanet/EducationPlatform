@@ -1,0 +1,49 @@
+<?php $this->pageTitle("Course - Edit"); ?>
+<h1>Edit <?php if (isset($this->course)) echo $this->course->getTitle();?></h1>
+
+<div id="courseTabs">
+	<ul>
+		<li><a href="#lecturesTab">Lectures</a></li>
+		<li><a href="#discussionsTab">Discussions</a></li>
+	</ul>
+	<div id="lecturesTab">
+		<p>
+			Hello!<br /> Thank you for creating a course on Thesis Planet! We are
+			really excited to see what you have to share with others. At Thesis
+			Planet you can add 'lectures' regardless of the content format;
+			whether its an MP3, a pre-recorded lecture, a printable document, or
+			even a large zip file.
+		</p>
+
+		<ul>
+			<li><a href="#addLecture" class="btn btn-primary">Add a new lecture</a>
+				<ul>
+					<li>Upload a Video</li>
+					<li>Upload an Audio file</li>
+					<li>Upload a file attachment (Anything can go here)</li>
+					<li>Write an article (Text Editor)</li>
+				</ul></li>
+		</ul>
+
+		<div class="contentPiece">
+			<div class="left">
+				<a class="btn" href="#up">Up</a> <a class="btn" href="#down">Down</a>
+			</div>
+			<div class="right">
+				<p>
+					<strong>title</strong>
+				</p>
+				<p>description</p>
+			</div>
+
+		</div>
+
+
+	</div>
+	<div id="discussionsTab"></div>
+</div>
+<script type="text/javascript">
+		$(document).ready(function () {
+			$("#courseTabs").wijtabs();
+		});
+</script>

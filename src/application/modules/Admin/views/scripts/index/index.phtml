@@ -1,0 +1,36 @@
+<?php $this->pageTitle("Administration"); ?>
+<div class="row">
+<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h1>Administration</h1>
+			</div>
+			<div class="content">
+				<p>In the administration section you can:</p>
+				<ul>
+					<li>Add, remove, and change the role of users.</li>
+					<li>Check to see if there have been any recent problems by
+						navigating to the monitoring page</li>
+					<li>Back up the system, as well as restore the database and
+						configuration files to a previous point.</li>
+					<li>Update the SSL certificate</li>
+					<li>Change platform-wide settings such as whether or not regular
+						users can create courses, or whether or not anyone can register a
+						new account.</li>
+				</ul>
+				<p>When granting someone a role of 'admin' they can do everything
+					that you can do.</p>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+

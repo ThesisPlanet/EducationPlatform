@@ -1,0 +1,32 @@
+<?php $this->pageTitle("Initialization - Restore Backup"); ?>
+<div class="row">
+	<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Restore from a backup</h2>
+			</div>
+			<div class="clr"></div>
+			<div class="content">
+				<p>Restoring from a backup will replace the following:</p>
+				<ul>
+					<li>The entire database</li>
+					<li>The Shared folder -- Assets and queued or unprocessed uploads
+						exist here.</li>
+					<li>Critical configuration files</li>
+					<li>SSL Certificates</li>
+				</ul>
+
+				<hr />
+				<p>When you are ready, go ahead and upload your backup.tar.gz file
+					created by the Digital Education Platform.</p>
+			<?php
+if (isset($this->output)) {
+
+    echo "<h1>" . $this->output . "</h1>\n";
+}
+?>
+			<?php echo $this->form;?>
+			</div>
+		</div>
+	</div>
+</div>

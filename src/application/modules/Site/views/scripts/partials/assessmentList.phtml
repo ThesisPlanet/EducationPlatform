@@ -1,0 +1,11 @@
+<tr>
+	<td><a class="btn btn-success"
+		href="/assessment/view/<?php echo $this->escape($this->assessment->getId());?>">View</a></td>
+	<td><a class="btn btn-warning"
+		href="/assessment/edit/<?php echo $this->escape($this->assessment->getId());?>">Edit</a></td>
+	<td><a class="btn btn-danger"
+		href="/assessment/delete/<?php echo $this->escape($this->assessment->getId());?>">Delete</a></td>
+	<td>no chapter yet</td>
+	<td><?php echo $this->escape($this->assessment->getTitle());?></td>
+	<td>Average Score</td>
+</tr>

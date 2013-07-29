@@ -1,0 +1,13 @@
+<tr>
+	<td>
+	<?php if ($this->subscription->getContinuing() == true) {?>
+		<a href="/my/subscription/cancel/<?php echo $this->subscription->getId();?>" class="btn btn-warning">Cancel</a>
+	<?php }else{?>
+	<a href="/my/subscription/resume/<?php echo $this->subscription->getId();?>" class="btn btn-primary">Resume</a>
+	<?php }?>
+	</td>
+	<td><?php echo $this->subscription->getChannel()->getCustomer()->getName();?></td>
+	<td><?php echo $this->subscription->getChannel()->getTitle();?></td>
+	<td><?php if (is_object($this->subscription->getExpires())) {echo $this->subscription->getExpires()->format("m-d-Y");}?></td>
+	<td><?php echo $this->subscription->getRole();?></td>
+</tr>

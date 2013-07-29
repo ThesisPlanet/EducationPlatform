@@ -1,0 +1,1 @@
+APPLICATION_ENV="testing" php src/bin/create-db-load-fixtures.php

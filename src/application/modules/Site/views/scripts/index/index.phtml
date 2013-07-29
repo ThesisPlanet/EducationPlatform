@@ -1,0 +1,95 @@
+<?php $this->pageTitle("My Courses"); ?>
+<?php
+if (isset($this->subscriptions)) {
+	$take = array();
+	$teach = array();
+	foreach ($this->subscriptions as $key => $subscriptionObj) {
+		$courseObj = $subscriptionObj->getCourse();
+		if (is_object($courseObj)) {
+			if ($subscriptionObj->getRole() == "provider") {
+				$teach[] = $courseObj;
+			} else {
+				$take[] = $courseObj;
+			}
+		}
+	}
+} else {
+	return false;
+}
+?>
+<div class="row">
+	<div class="span12">
+		<div class="nav_main">
+			<h3>My Courses</h3>
+			<!-- heading close -->
+
+			<ul>
+				<li><a class="btn course-take-button">Courses | Take</a></li>
+				<?php if (count($teach) > 0 and $this->canCreateCourses == true) : ?>
+				<li><a class="btn course-teach-button">Courses | Teach</a></li>
+				<?php endif; ?>
+				
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="span12">
+		<div class="course_div">
+			<div class="course-take hidden">
+				<div class="row">
+        <?php
+foreach ($take as $key => $courseObj) {
+
+	echo $this->partial('partials/courseListing.phtml', array("course" => $courseObj, "service" => new \App\service\Course()));
+}
+		?>
+            <div class="courselisting-action-partial">
+						<br /> <br /> <a href="/course" class="btn-large btn-info">Discover
+							more courses</a>
+					</div>
+				</div>
+			</div>
+			<div class="course-teach hidden">
+				<div class="row">
+           <?php
+foreach ($teach as $key => $courseObj) {
+
+	echo $this->partial('partials/courseListing.phtml', array("course" => $courseObj, "service" => new \App\service\Course()));
+}
+		   ?>
+        </div>
+				<div class="courselisting-action-partial">
+					<br /> <br /> 
+					<?php if ($this->canCreateCourses) : ?>
+					<a href="/course/create" class="btn-large btn-info">Create
+						a new course</a>
+						<?php endif; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    // Hide the courses that are taught.
+	$(".course-take").removeClass("hidden");
+	$(".course-take-button").addClass("active");
+
+	// Add event handler for clicking on the Courses | take button
+	$(".course-take-button").click(function(){
+		$(".course-take-button").addClass("active");
+		$(".course-teach-button").removeClass("active");
+		$(".course-take").removeClass("hidden");
+		$(".course-teach").addClass("hidden");
+	});
+	// Add event handler for clicking on the Courses | Teach button
+	$(".course-teach-button").click(function(){
+		$(".course-teach-button").addClass("active");
+		$(".course-take-button").removeClass("active");
+		$(".course-take").addClass("hidden");
+		$(".course-teach").removeClass("hidden");
+	});
+});
+</script>

@@ -1,0 +1,43 @@
+<?php $this->pageTitle("Course - Manage Picture"); ?>
+<div class="row">
+	<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+
+<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Update Course image</h2>
+
+			</div>
+			<div class="clr"></div>
+			<div class="content settingsZone">
+				<p>
+					<strong>Please note:</strong> If you are replacing an existing
+					course image, it can take up to 48 hours for the new image to
+					appear. This is due to AWS caching the image.
+				</p>
+			    <?php echo $this->form;?>
+
+			<h3>Preview</h3>
+				<div class="center">
+					<img class="course_image"
+						src="<?php
+    $service = new \App\Service\Course();
+    echo $service->acl_getImageUrl($this->course->getId());
+    ?>"
+						alt="<?php echo $this->escape($this->course->getTitle());?>" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		window.courseId = "<?php echo $this->course->getId();?>";
+});
+</script>

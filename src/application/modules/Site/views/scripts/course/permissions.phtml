@@ -1,0 +1,26 @@
+<?php $this->pageTitle("Course - Manage Permissions"); ?>
+<div class="row">
+	<?php
+echo $this->partial('partials/settingsLinks.phtml', 
+        array(
+                "course" => $this->course,
+                'current' => $this->current
+        ));
+?>
+
+<div class="span9">
+		<div class="module">
+			<div class="heading">
+				<h2>Course Permissions</h2>
+
+			</div>
+			<div class="clr"></div>
+			<div class="content"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		window.courseId = "<?php echo $this->course->getId();?>";
+});
+</script>

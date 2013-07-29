@@ -1,0 +1,64 @@
+<?php $this->pageTitle("Assessment - Your Results"); ?>
+<div class="row">
+	<div class="span12">
+		<div class="head_main">
+			<ul class="sbcbr_nav">
+				<li><a
+					href="/course/view/<?php echo $this->escape($this->assessment->getCourse()->getId());?>"><span>Back
+							to Course</span></a></li>
+				<li><a
+					href="/assessment/view/<?php echo $this->escape($this->assessment->getId());?>"><span>Back
+							to Assessment</span></a></li>
+
+			</ul>
+		</div>
+
+		<div class="module">
+			<div class="heading">
+				<h2>Results</h2>
+			</div>
+			<div class="content">
+				<h3>You scored: <?php echo $this->escape($this->attempt->getScore() * 100);?>%</h3>
+				<hr />
+				<h3>Questions:</h3>
+				<ol>
+				
+				
+				<?php foreach ($this->attempt->getQuestions() as $key => $questionObjAsArr):?>
+				<?php
+        
+        if (is_array($this->attempt->getCorrected())) {
+            $correctArr = $this->attempt->getCorrected();
+            if (array_key_exists($key, $correctArr))
+                $correct = $correctArr[$key];
+        } else {
+            $correct = false;
+        }
+        ?>
+				<li><div
+							class="QuestionReview <?php if ($correct == true) { echo "alert-success";}else{ echo "alert-error";}?>">
+							<h4><?php echo $this->escape($questionObjAsArr['title']);?></h4>
+								<?php
+        switch ($questionObjAsArr['class']) {
+            case 'App\Entity\Course\Assessment\Question\TrueFalse':
+                // $form = new \App\Form\Course\Assessment\Question\TrueFalse();
+                // $form->populate($questionObjAsArr);
+                // echo $form;
+                break;
+            case 'App\Entity\Course\Assessment\Question\FillInTheBlank':
+                break;
+            case 'App\Entity\Course\Assessment\Question\MultipleChoice':
+                
+                break;
+        }
+        ?>
+        </div></li>
+				
+				
+								
+				<?php endforeach;?>
+				</ol>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,7 @@
+<h1>A new question has been answered in <?php echo $this->escape($this->course['title']);?>.</h1>
+<h2>Question:</h2>
+<blockquote><?php echo $this->escape($this->question['text']);?></blockquote>
+<h2>Answer:</h2>
+<blockquote><?php echo $this->escape($this->answer['text']);?></blockquote>
+<p>-- <?php echo $this->escape($this->answerer['firstname'] . " " . $this->answerer['lastname']);?></p>
+

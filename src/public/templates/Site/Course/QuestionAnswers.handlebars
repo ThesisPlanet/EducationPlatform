@@ -1,0 +1,23 @@
+<a class="btn backToQuestionsLink" data-id="{{courseId}}">Back</a>
+{{#if canDelete}}
+<a class="btn btn-danger deleteQuestion" data-id="{{questionId}}">Delete this question</a><br/>
+{{/if}}
+<b>{{_username}}</b>
+asks ...
+<h3>{{questionText}}</h3>
+<input type="text" style="width: 95%"
+	placeholder="Type in an answer to this question"
+	data-id="{{questionId}}" name="answerAQuestion" class="answerAQuestion" />
+<hr />
+<ul>
+	{{#answers}}
+	<li><span class="thumb"></span> <a class="user">{{_username}}</a>
+		<time>
+			replied <b>{{_age}}</b> ago
+		</time>
+		<article>{{text}}</article>
+		{{#if canDelete}}
+			<a class="btn btn-danger deleteAnswer" data-id="{{id}}">Delete</a><br/>
+		{{/if}}
+		</li>{{/answers}}
+</ul>

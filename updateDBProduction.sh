@@ -1,0 +1,1 @@
+APPLICATION_ENV="production" php src/bin/doctrine.php orm:schema-tool:update --force && APPLICATION_ENV="production" php src/bin/App/checkForAdmin.php

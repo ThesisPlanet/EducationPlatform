@@ -1,9 +1,10 @@
-Copyright (C) 2013 Thesis Planet, LLC. All Rights Reserved. 
+Copyright (C) 2013 Jack Peterson. All Rights Reserved. 
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 Files contained within src/public/[css|images|img|js]/libs/* are subject to the terms and conditions of the respective copyright holders.
+Files contained within src/library/[Aws|Bisna|Fonts|pChart|vendor]/* are subject to the terms and conditions of the respective copyright holders.
 
 --------------------------License--------------------------
 
